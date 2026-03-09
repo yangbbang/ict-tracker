@@ -178,12 +178,25 @@ tr:hover td{background:rgba(255,255,255,.012)}
     </div></div>
   </div>
   <div class="card">
+    <div class="ch"><span>OTE 백테스트 결과</span><span>Discount SSL Sweep → 61.8~78.6% 진입</span></div>
+    <table><thead><tr><th>TF</th><th>거래</th><th>승률</th><th>EV</th><th>판정</th></tr></thead>
+    <tbody>
+      <tr><td>일봉</td><td>11건</td><td><div class="bar-r"><div class="bar-bg"><div class="bar-f" style="width:27%;background:var(--r)"></div></div><span style="font-size:.7rem;color:var(--r)">27.3%</span></div></td><td><span class="ev evr">-0.18</span></td><td style="font-size:.72rem;color:var(--muted)">⚠️ 단독주의</td></tr>
+      <tr><td>4시간</td><td>18건</td><td><div class="bar-r"><div class="bar-bg"><div class="bar-f" style="width:22%;background:var(--r)"></div></div><span style="font-size:.7rem;color:var(--r)">22.2%</span></div></td><td><span class="ev evr">-0.33</span></td><td style="font-size:.72rem;color:var(--muted)">⚠️ 단독주의</td></tr>
+      <tr><td>1시간</td><td>20건</td><td><div class="bar-r"><div class="bar-bg"><div class="bar-f" style="width:25%;background:var(--r)"></div></div><span style="font-size:.7rem;color:var(--r)">25.0%</span></div></td><td><span class="ev evr">-0.25</span></td><td style="font-size:.72rem;color:var(--muted)">⚠️ 단독주의</td></tr>
+    </tbody></table>
+    <div style="padding:10px 13px;font-size:.74rem;color:#a0a8b8;line-height:1.6;border-top:1px solid var(--border)">
+      💡 <b>OTE 단독</b>은 BTC/USDT에서 EV 마이너스. 하지만 <b>CISD + OTE + HTF 편향 정렬</b> 시 승률 대폭 상승. OTE는 <b>진입 타이밍 도구</b>로 활용하는 게 핵심.
+    </div>
+  </div>
+  <div class="card">
     <div class="ch"><span>인사이트</span></div>
     <div style="padding:11px 13px;font-size:.76rem;line-height:1.7;color:#b8c0cc;display:flex;flex-direction:column;gap:5px">
       <div>🏆 <b>CISD</b> — 63.9% 승률, EV +0.92. 4H +1.48 압도적.</div>
       <div>🔥 <b>브레이커 블록</b> — 모든 TF 플러스. 단타 최적.</div>
+      <div>📐 <b>OTE</b> — 단독 사용 시 EV 마이너스. CISD/구조전환 후 진입 타이밍 도구로 활용.</div>
       <div>⚠️ <b>터틀·AMD·SMT</b> — 단독 사용 금지.</div>
-      <div>🎯 최강: <b>4H CISD + 브레이커</b></div>
+      <div>🎯 최강: <b>4H CISD + OTE 진입 + 브레이커 확인</b></div>
     </div>
   </div>
 </div>
@@ -213,7 +226,7 @@ const pct=(a,b)=>((a-b)/b*100);
 let TF='4h', candles=[], chart, series;
 let liqChart, liqSeries;
 let ws, curPage=0, curPrice=0;
-let currentBoxes=[], currentSetups=[];
+let currentBoxes=[], currentSetups=[], currentOTE=null;
 
 // ── 탭 / TF ─────────────────────────────────
 function goPage(n){
@@ -232,6 +245,45 @@ function setTF(tf){
 function swH(C,i,w=3){if(i<w||i>=C.length-w)return false;for(let j=i-w;j<=i+w;j++)if(j!==i&&C[j].high>=C[i].high)return false;return true;}
 function swL(C,i,w=3){if(i<w||i>=C.length-w)return false;for(let j=i-w;j<=i+w;j++)if(j!==i&&C[j].low<=C[i].low)return false;return true;}
 function ab(C,i,n=5){let s=0;for(let k=Math.max(0,i-n);k<i;k++)s+=Math.abs(C[k].close-C[k].open);return Math.max(10,s/n);}
+
+// ── OTE / Discount-Premium 감지 ──────────────
+function detectOTE(C){
+  const N=C.length, SH=[], SL=[];
+  for(let i=0;i<N;i++){if(swH(C,i))SH.push({i,p:C[i].high,t:C[i].time});if(swL(C,i))SL.push({i,p:C[i].low,t:C[i].time});}
+  const oteZones=[], fibLines=[], discPrem=[];
+
+  SH.slice(-8).forEach(sh=>{
+    const nextLows=SL.filter(sl=>sl.i>sh.i&&sl.i<sh.i+25);
+    if(!nextLows.length)return;
+    const sl=nextLows[0];
+    const H=sh.p, L=sl.p, rng=H-L;
+    if(rng/H<0.015)return;
+
+    const f50=H-rng*.5, f618=H-rng*.618, f705=H-rng*.705, f786=H-rng*.786;
+
+    // Discount/Premium 박스
+    discPrem.push({
+      swingHigh:H, swingLow:L, mid:f50,
+      startTime:sh.t, endTime:sl.t,
+      premFill:'rgba(239,68,68,0.06)', premBorder:'rgba(239,68,68,0.3)',
+      discFill:'rgba(34,197,94,0.06)', discBorder:'rgba(34,197,94,0.3)',
+    });
+
+    // OTE 구간 박스 (61.8~78.6%)
+    oteZones.push({
+      top:f618, bot:f786, startTime:sl.t,
+      fillColor:'rgba(245,158,11,0.1)', borderColor:'rgba(245,158,11,0.55)',
+      label:'OTE', labelColor:'#f59e0b'
+    });
+
+    // 피보나치 레벨 라인
+    [{p:f50,l:'50%',c:'rgba(200,200,200,.35)'},{p:f618,l:'61.8%',c:'rgba(245,158,11,.55)'},{p:f705,l:'70.5%',c:'rgba(245,158,11,.7)'},{p:f786,l:'78.6%',c:'rgba(245,158,11,.55)'}].forEach(f=>{
+      fibLines.push({price:f.p,label:f.l,color:f.c,startTime:sh.t});
+    });
+  });
+
+  return{oteZones:oteZones.slice(-2), fibLines:fibLines.slice(-16), discPrem:discPrem.slice(-2)};
+}
 
 function analyzeCandles(C){
   const N=C.length, shs=[], sls=[];
@@ -289,7 +341,8 @@ function analyzeCandles(C){
 
   const active=setups.filter(s=>s.status==='active');
   const done=setups.filter(s=>s.status!=='active').slice(-5);
-  return{fvgs:fvgs.slice(-5), obs:obs.slice(-4), active, done, liqLevels, shs:shs.slice(-3), sls:sls.slice(-3), cp};
+  const ote=detectOTE(C);
+  return{fvgs:fvgs.slice(-5), obs:obs.slice(-4), active, done, liqLevels, shs:shs.slice(-3), sls:sls.slice(-3), cp, ote};
 }
 
 // ── Canvas 오버레이 드로잉 ────────────────────
@@ -302,6 +355,52 @@ function drawOverlay(canvasEl, chartInst, seriesInst, boxes, liqLevels, setups, 
   ctx.clearRect(0,0,w,h);
   // 오른쪽 가격축 너비 제외
   const rPad=65;
+
+  // ── Discount / Premium 박스 ──
+  if(currentOTE){
+    currentOTE.discPrem.forEach(dp=>{
+      const yH=seriesInst.priceToCoordinate(dp.swingHigh);
+      const yM=seriesInst.priceToCoordinate(dp.mid);
+      const yL=seriesInst.priceToCoordinate(dp.swingLow);
+      const x1=chartInst.timeScale().timeToCoordinate(dp.startTime);
+      if(yH===null||yM===null||yL===null||x1===null)return;
+      const x2=w-rPad;
+      // Premium (위, 빨강)
+      ctx.fillStyle=dp.premFill;ctx.fillRect(x1,Math.min(yH,yM),x2-x1,Math.abs(yM-yH));
+      ctx.strokeStyle=dp.premBorder;ctx.lineWidth=.5;ctx.setLineDash([3,3]);ctx.strokeRect(x1,Math.min(yH,yM),x2-x1,Math.abs(yM-yH));
+      // Discount (아래, 초록)
+      ctx.fillStyle=dp.discFill;ctx.fillRect(x1,Math.min(yM,yL),x2-x1,Math.abs(yL-yM));
+      ctx.strokeStyle=dp.discBorder;ctx.strokeRect(x1,Math.min(yM,yL),x2-x1,Math.abs(yL-yM));
+      ctx.setLineDash([]);
+      // 50% 라인 레이블
+      if(yM!==null){ctx.fillStyle='rgba(200,200,200,.5)';ctx.font='9px sans-serif';ctx.fillText('50%',x2-28,yM-2);}
+    });
+    // OTE 구간 (61.8~78.6%)
+    currentOTE.oteZones.forEach(box=>{
+      const y1=seriesInst.priceToCoordinate(box.top);
+      const y2=seriesInst.priceToCoordinate(box.bot);
+      const x1=chartInst.timeScale().timeToCoordinate(box.startTime);
+      if(y1===null||y2===null||x1===null)return;
+      const yTop=Math.min(y1,y2),yBot=Math.max(y1,y2),bh=yBot-yTop;
+      if(bh<2)return;
+      const x2=w-rPad;
+      ctx.fillStyle=box.fillColor;ctx.fillRect(x1,yTop,x2-x1,bh);
+      ctx.strokeStyle=box.borderColor;ctx.lineWidth=1.5;ctx.setLineDash([]);ctx.strokeRect(x1,yTop,x2-x1,bh);
+      ctx.fillStyle=box.labelColor;ctx.font='bold 11px sans-serif';
+      ctx.fillText(box.label,x1+5,yTop+bh/2+4);
+    });
+    // 피보나치 레벨 라인
+    currentOTE.fibLines.forEach(fl=>{
+      const y=seriesInst.priceToCoordinate(fl.price);
+      const x1=chartInst.timeScale().timeToCoordinate(fl.startTime)||0;
+      if(y===null)return;
+      ctx.strokeStyle=fl.color;ctx.lineWidth=1;ctx.setLineDash([4,3]);
+      ctx.beginPath();ctx.moveTo(x1,y);ctx.lineTo(w-rPad,y);ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle=fl.color;ctx.font='10px sans-serif';
+      ctx.fillText(fl.label,w-rPad-28,y-2);
+    });
+  }
 
   // ── 박스 (FVG / OB) ──
   boxes.forEach(box=>{
@@ -396,6 +495,7 @@ function renderChart(C, res){
   // 박스 = FVG + OB
   currentBoxes=[...res.fvgs,...res.obs];
   currentSetups=res.active;
+  currentOTE=res.ote;
   // 마커: 최근 스윙 + 진입점
   const markers=[];
   res.shs.forEach(s=>markers.push({time:s.t,position:'aboveBar',color:'rgba(245,158,11,.4)',shape:'circle',text:'SH'}));
@@ -532,7 +632,7 @@ function connectWS(){
     series?.update(nc);curPrice=nc.close;
     $('hP').textContent=fmt(nc.close);$('hP').style.color=nc.close>=nc.open?'var(--g)':'var(--r)';
     const res=analyzeCandles(candles);
-    currentBoxes=[...res.fvgs,...res.obs];currentSetups=res.active;
+    currentBoxes=[...res.fvgs,...res.obs];currentSetups=res.active;currentOTE=res.ote;
     updatePanel(candles,res);
     redrawOverlay();
     if(curPage===2){drawLiqOverlay();renderLiqList();}
