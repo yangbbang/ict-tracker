@@ -400,8 +400,9 @@ function detect(C){
   }
   for(let i=2;i<N;i++){if(C[i-2].high<C[i].low)fvgs.push({type:'BULL',top:C[i].low,bot:C[i-2].high,t:C[i-1].time});if(C[i-2].low>C[i].high)fvgs.push({type:'BEAR',top:C[i-2].low,bot:C[i].high,t:C[i-1].time});}
   for(let i=3;i<N-3;i++){const bn=C[i+1].close-C[i+1].open;if(C[i].close<C[i].open&&bn>ab(C,i)*1.2&&C[i+1].close>C[i+1].open)obs.push({type:'BULL',top:C[i].high,bot:C[i].low,t:C[i].time});if(C[i].close>C[i].open&&-bn>ab(C,i)*1.2&&C[i+1].close<C[i+1].open)obs.push({type:'BEAR',top:C[i].high,bot:C[i].low,t:C[i].time});}
-  shs.filter(s=>s.i>N-60).forEach(s=>markers.push({time:s.t,position:'aboveBar',color:'rgba(210,153,34,.6)',shape:'circle',text:'SH'}));
-  sls.filter(s=>s.i>N-60).forEach(s=>markers.push({time:s.t,position:'belowBar',color:'rgba(210,153,34,.6)',shape:'circle',text:'SL'}));
+  // 스윙 마커: 최근 20캔들만
+  shs.filter(s=>s.i>N-20).forEach(s=>markers.push({time:s.t,position:'aboveBar',color:'rgba(210,153,34,.6)',shape:'circle',text:'SH'}));
+  sls.filter(s=>s.i>N-20).forEach(s=>markers.push({time:s.t,position:'belowBar',color:'rgba(210,153,34,.6)',shape:'circle',text:'SL'}));
 
   const cp=C[N-1].close; curPrice=cp;
   const up=sigs.filter(s=>s.type==='BOS_UP'||s.type==='MSS_UP').length;
@@ -410,8 +411,11 @@ function detect(C){
   const bsl=[69988,70983,74050,75000,80000],ssl=[68699,65632,63030,62510,60000];
   const nB=bsl.find(p=>p>cp), nS=[...ssl].reverse().find(p=>p<cp);
   const target=up>dn?(nB?fmtK(nB):'--'):(nS?fmtK(nS):'--');
-  const activeFVGs=fvgs.filter(f=>f.type==='BULL'?cp>f.bot:cp<f.top).slice(-10);
-  return{sigs,markers,fvgs:activeFVGs,obs:obs.slice(-8),bias,target};
+  // FVG: 미충전만 (가격이 갭 안으로 들어오지 않은 것) - 최근 5개만
+  const activeFVGs=fvgs.filter(f=>f.type==='BULL'?cp>=f.bot:cp<=f.top).slice(-5);
+  // OB: 미무효화만 (가격이 OB를 완전히 뚫지 않은 것) - 최근 5개만
+  const activeOBs=obs.filter(ob=>ob.type==='BULL'?cp>ob.bot:cp<ob.top).slice(-5);
+  return{sigs,markers,fvgs:activeFVGs,obs:activeOBs,bias,target};
 }
 
 // ── 차트 렌더 ────────────────────────────────
@@ -426,9 +430,22 @@ function initChart(){
 function renderChart(C,res){
   plRefs.forEach(pl=>{try{series.removePriceLine(pl)}catch(e){}});plRefs=[];
   series.setData(C.map(c=>({time:c.time,open:c.open,high:c.high,low:c.low,close:c.close})));
-  res.fvgs.slice(-8).forEach(f=>{const b=f.type==='BULL';plRefs.push(series.createPriceLine({price:f.top,color:b?'rgba(88,166,255,.5)':'rgba(248,81,73,.5)',lineWidth:1,lineStyle:2,axisLabelVisible:false,title:b?'FVG↑':'FVG↓'}));plRefs.push(series.createPriceLine({price:f.bot,color:b?'rgba(88,166,255,.25)':'rgba(248,81,73,.25)',lineWidth:1,lineStyle:2,axisLabelVisible:false}));});
-  res.obs.forEach(ob=>{const b=ob.type==='BULL';plRefs.push(series.createPriceLine({price:ob.top,color:b?'rgba(88,166,255,.9)':'rgba(163,113,247,.9)',lineWidth:2,lineStyle:0,axisLabelVisible:true,title:b?'OB↑':'OB↓'}));plRefs.push(series.createPriceLine({price:ob.bot,color:b?'rgba(88,166,255,.35)':'rgba(163,113,247,.35)',lineWidth:1,lineStyle:2,axisLabelVisible:false}));});
-  [{p:74050,c:'rgba(63,185,80,.9)',l:'BSL 03/04⭐'},{p:70983,c:'rgba(63,185,80,.7)',l:'BSL 02/15'},{p:69988,c:'rgba(63,185,80,.7)',l:'BSL 02/25'},{p:75000,c:'rgba(163,113,247,.6)',l:'$75K'},{p:70000,c:'rgba(163,113,247,.5)',l:'$70K'},{p:68699,c:'rgba(248,81,73,.7)',l:'SSL 02/21'},{p:65632,c:'rgba(248,81,73,.85)',l:'SSL 02/19'},{p:65000,c:'rgba(163,113,247,.5)',l:'$65K'},{p:63030,c:'rgba(248,81,73,.8)',l:'SSL 02/28'},{p:62510,c:'rgba(248,81,73,1)',l:'주봉SSL⭐'}].forEach(l=>plRefs.push(series.createPriceLine({price:l.p,color:l.c,lineWidth:1,lineStyle:3,axisLabelVisible:true,title:l.l})));
+  res.fvgs.slice(-8).forEach(f=>{
+    const b=f.type==='BULL';
+    plRefs.push(series.createPriceLine({price:f.top,color:b?'rgba(88,166,255,.7)':'rgba(248,81,73,.7)',lineWidth:2,lineStyle:0,axisLabelVisible:false,title:b?'FVG↑':'FVG↓'}));
+    plRefs.push(series.createPriceLine({price:f.bot,color:b?'rgba(88,166,255,.4)':'rgba(248,81,73,.4)',lineWidth:2,lineStyle:0,axisLabelVisible:false}));
+  });
+  res.obs.forEach(ob=>{
+    const b=ob.type==='BULL';
+    plRefs.push(series.createPriceLine({price:ob.top,color:b?'rgba(88,166,255,.9)':'rgba(163,113,247,.9)',lineWidth:3,lineStyle:0,axisLabelVisible:true,title:b?'OB↑':'OB↓'}));
+    plRefs.push(series.createPriceLine({price:ob.bot,color:b?'rgba(88,166,255,.5)':'rgba(163,113,247,.5)',lineWidth:2,lineStyle:0,axisLabelVisible:false}));
+  });
+  // 유동성: 현재가 기준 가장 가까운 위 3개 + 아래 3개만
+  const allLiq=[{p:74050,c:'rgba(63,185,80,.9)',l:'BSL 03/04⭐'},{p:70983,c:'rgba(63,185,80,.7)',l:'BSL 02/15'},{p:69988,c:'rgba(63,185,80,.7)',l:'BSL 02/25'},{p:75000,c:'rgba(163,113,247,.6)',l:'$75K'},{p:70000,c:'rgba(163,113,247,.5)',l:'$70K'},{p:68699,c:'rgba(248,81,73,.7)',l:'SSL 02/21'},{p:65632,c:'rgba(248,81,73,.85)',l:'SSL 02/19'},{p:65000,c:'rgba(163,113,247,.5)',l:'$65K'},{p:63030,c:'rgba(248,81,73,.8)',l:'SSL 02/28'},{p:62510,c:'rgba(248,81,73,1)',l:'주봉SSL⭐'}];
+  const cp2=C[C.length-1].close;
+  const liqAbove=allLiq.filter(l=>l.p>cp2).sort((a,b)=>a.p-b.p).slice(0,3);
+  const liqBelow=allLiq.filter(l=>l.p<cp2).sort((a,b)=>b.p-a.p).slice(0,3);
+  [...liqAbove,...liqBelow].forEach(l=>plRefs.push(series.createPriceLine({price:l.p,color:l.c,lineWidth:1,lineStyle:3,axisLabelVisible:true,title:l.l})));
   plRefs.push(series.createPriceLine({price:C[C.length-1].close,color:'#58a6ff',lineWidth:2,lineStyle:0,axisLabelVisible:true,title:'▶'}));
   const seen=new Set();
   series.setMarkers([...res.markers].sort((a,b)=>a.time-b.time).filter(m=>{const k=`${m.time}_${m.text}`;if(seen.has(k))return false;seen.add(k);return true;}));
