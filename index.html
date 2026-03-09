@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>ICT 패턴 트래커</title>
+<script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
+<style>
+:root{
+  --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;
+  --border:#30363d;--text:#e6edf3;--muted:#8b949e;
+  --green:#3fb950;--red:#f85149;--yellow:#d29922;
+  --blue:#58a6ff;--purple:#a371f7;--orange:#f0883e;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,'Segoe UI',sans-serif;display:flex;flex-direction:column}
+
+/* ── 헤더 ── */
+.hdr{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0;z-index:10}
+.hdr-price{font-size:1.4rem;font-weight:700;transition:color .3s}
+.hdr-chg{font-size:.78rem;padding:2px 7px;border-radius:4px;font-weight:600}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:blink 1.4s infinite;flex-shrink:0}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.hdr-right{margin-left:auto;text-align:right}
+.hdr-right .symbol{font-size:.82rem;font-weight:700;color:var(--blue)}
+.hdr-right .updated{font-size:.68rem;color:var(--muted)}
+
+/* ── 타임프레임 탭 ── */
+.tf-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 12px;display:flex;gap:4px;flex-shrink:0}
+.tf{padding:8px 14px;font-size:.8rem;font-weight:600;color:var(--muted);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
+.tf.on{color:var(--blue);border-bottom-color:var(--blue)}
+
+/* ── 메인 레이아웃 ── */
+.main{flex:1;display:grid;grid-template-rows:1fr;overflow:hidden}
+/* 데스크탑: 차트 + 사이드 */
+@media(min-width:768px){
+  .main{grid-template-columns:1fr 320px;grid-template-rows:1fr}
+  .chart-wrap{border-right:1px solid var(--border)}
+  .side{overflow-y:auto;grid-row:1}
+}
+/* 모바일: 탭 뷰 */
+@media(max-width:767px){
+  .main{grid-template-rows:1fr auto;overflow:hidden}
+  .chart-wrap{overflow:hidden}
+  .side{display:none;overflow-y:auto}
+  .side.show{display:block;position:fixed;inset:0;top:57px;background:var(--bg);z-index:20;overflow-y:auto;padding-bottom:70px}
+}
+
+/* ── 차트 ── */
+.chart-wrap{position:relative;display:flex;flex-direction:column}
+.chart-legend{display:flex;gap:8px;padding:6px 12px;background:var(--bg2);border-bottom:1px solid var(--border);flex-wrap:wrap}
+.leg{display:flex;align-items:center;gap:4px;font-size:.68rem;color:var(--muted)}
+.ldot{width:8px;height:8px;border-radius:1px;flex-shrink:0}
+#chart{flex:1;width:100%}
+
+/* ── 사이드패널 ── */
+.side::-webkit-scrollbar{width:3px}
+.side::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+/* ── 섹션 ── */
+.sec{border-bottom:1px solid var(--border)}
+.sec-head{padding:10px 14px;background:var(--bg2);font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:1}
+.badge-cnt{background:var(--bg3);color:var(--text);padding:1px 7px;border-radius:10px;font-size:.7rem}
+
+/* ── 구조 카드 ── */
+.struct-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
+.struct-box{background:var(--bg);padding:12px 14px}
+.sl{font-size:.7rem;color:var(--muted);margin-bottom:4px}
+.sv{font-size:1.1rem;font-weight:700}
+.ss{font-size:.7rem;color:var(--muted);margin-top:2px}
+
+/* ── 패턴 신호 ── */
+.sig{display:flex;gap:10px;padding:10px 14px;border-bottom:1px solid var(--bg3);align-items:flex-start;cursor:pointer;transition:background .1s;-webkit-transition:background .1s}
+.sig:active{background:var(--bg3)}
+.sig.fresh{animation:sigflash .8s ease}
+@keyframes sigflash{0%{background:#1a3a1a}100%{background:transparent}}
+.sig-ic{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.sig-info{flex:1;min-width:0}
+.sig-name{font-size:.82rem;font-weight:600;margin-bottom:2px}
+.sig-desc{font-size:.72rem;color:var(--muted);line-height:1.4}
+.sig-right{text-align:right;flex-shrink:0}
+.sig-price{font-size:.82rem;font-weight:600}
+.sig-time{font-size:.68rem;color:var(--muted);margin-top:2px}
+
+/* ── 유동성 구간 ── */
+.liq{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;border-bottom:1px solid var(--bg3)}
+.liq-left{display:flex;align-items:center;gap:8px}
+.liq-bar{width:3px;height:28px;border-radius:2px;flex-shrink:0}
+.liq-name{font-size:.8rem;font-weight:500}
+.liq-tf{font-size:.68rem;color:var(--muted);margin-top:1px}
+.liq-right{text-align:right}
+.liq-price{font-size:.85rem;font-weight:700}
+.liq-dist{font-size:.7rem;margin-top:1px}
+
+/* ── FVG ── */
+.fvg{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;border-bottom:1px solid var(--bg3)}
+.fvg-range{font-size:.78rem;font-weight:600}
+.fvg-meta{font-size:.7rem;color:var(--muted);margin-top:2px}
+.fvg-tag{font-size:.7rem;padding:1px 7px;border-radius:10px;font-weight:600}
+
+/* ── 모바일 하단 탭 ── */
+.mob-tabs{display:none}
+@media(max-width:767px){
+  .mob-tabs{display:flex;background:var(--bg2);border-top:1px solid var(--border);flex-shrink:0;z-index:10}
+  .mob-tab{flex:1;padding:10px 4px;text-align:center;font-size:.68rem;color:var(--muted);border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color .15s}
+  .mob-tab.on{color:var(--blue)}
+  .mob-tab .ti{font-size:1.1rem}
+}
+
+/* ── 현재 구조 요약 바 (모바일용) ── */
+.struct-bar{display:none}
+@media(max-width:767px){
+  .struct-bar{display:flex;gap:8px;padding:8px 12px;background:var(--bg2);border-bottom:1px solid var(--border);overflow-x:auto;flex-shrink:0}
+  .sb-item{display:flex;flex-direction:column;align-items:center;flex-shrink:0;min-width:60px}
+  .sb-val{font-size:.82rem;font-weight:700}
+  .sb-lbl{font-size:.6rem;color:var(--muted);margin-top:2px}
+}
+
+/* 빈 상태 */
+.empty{padding:20px 14px;text-align:center;color:var(--muted);font-size:.8rem}
+</style>
+</head>
+<body>
+
+<!-- 헤더 -->
+<div class="hdr">
+  <div class="live-dot"></div>
+  <div class="hdr-price" id="hPrice">--</div>
+  <div class="hdr-chg" id="hChg">--</div>
+  <div class="hdr-right">
+    <div class="symbol">BTC/USDT</div>
+    <div class="updated" id="hUpdated">연결중...</div>
+  </div>
+</div>
+
+<!-- 모바일 구조 요약 -->
+<div class="struct-bar">
+  <div class="sb-item"><div class="sb-val" id="m_bias">--</div><div class="sb-lbl">편향</div></div>
+  <div class="sb-item"><div class="sb-val green" id="m_bos">0</div><div class="sb-lbl">BOS</div></div>
+  <div class="sb-item"><div class="sb-val" style="color:var(--yellow)" id="m_mss">0</div><div class="sb-lbl">MSS</div></div>
+  <div class="sb-item"><div class="sb-val blue" id="m_fvg">0</div><div class="sb-lbl">FVG</div></div>
+  <div class="sb-item"><div class="sb-val" style="color:var(--purple)" id="m_ob">0</div><div class="sb-lbl">OB</div></div>
+  <div class="sb-item"><div class="sb-val" id="m_target" style="font-size:.72rem">--</div><div class="sb-lbl">타겟</div></div>
+</div>
+
+<!-- TF 탭 -->
+<div class="tf-bar">
+  <button class="tf" onclick="setTF('15m')">15M</button>
+  <button class="tf" onclick="setTF('1h')">1H</button>
+  <button class="tf on" onclick="setTF('4h')">4H</button>
+  <button class="tf" onclick="setTF('1d')">1D</button>
+</div>
+
+<!-- 메인 -->
+<div class="main">
+
+  <!-- 차트 -->
+  <div class="chart-wrap">
+    <div class="chart-legend">
+      <div class="leg"><div class="ldot" style="background:var(--green)"></div>BOS▲</div>
+      <div class="leg"><div class="ldot" style="background:var(--red)"></div>BOS▼</div>
+      <div class="leg"><div class="ldot" style="background:var(--yellow)"></div>MSS</div>
+      <div class="leg"><div class="ldot" style="background:var(--orange)"></div>CHoCH</div>
+      <div class="leg"><div class="ldot" style="background:rgba(88,166,255,.5);border:1px dashed var(--blue)"></div>FVG</div>
+      <div class="leg"><div class="ldot" style="background:var(--blue)"></div>OB</div>
+      <div class="leg"><div class="ldot" style="background:var(--purple);opacity:.6"></div>유동성</div>
+    </div>
+    <div id="chart"></div>
+  </div>
+
+  <!-- 사이드패널 -->
+  <div class="side" id="side">
+
+    <!-- 구조 요약 (데스크탑) -->
+    <div class="sec">
+      <div class="sec-head">📐 현재 시장 구조</div>
+      <div class="struct-grid">
+        <div class="struct-box"><div class="sl">HTF 편향</div><div class="sv" id="d_bias">--</div><div class="ss">방향성</div></div>
+        <div class="struct-box"><div class="sl">다음 유동성 타겟</div><div class="sv" style="font-size:.9rem" id="d_target">--</div><div class="ss">가격 목표</div></div>
+        <div class="struct-box"><div class="sl">BOS 감지 (누적)</div><div class="sv green" id="d_bos">0</div><div class="ss">구조 돌파</div></div>
+        <div class="struct-box"><div class="sl">MSS 감지 (누적)</div><div class="sv" style="color:var(--yellow)" id="d_mss">0</div><div class="ss">구조 전환</div></div>
+        <div class="struct-box"><div class="sl">활성 FVG</div><div class="sv blue" id="d_fvg">0</div><div class="ss">미충전 갭</div></div>
+        <div class="struct-box"><div class="sl">활성 OB</div><div class="sv" style="color:var(--purple)" id="d_ob">0</div><div class="ss">오더블록</div></div>
+      </div>
+    </div>
+
+    <!-- 실시간 패턴 신호 -->
+    <div class="sec">
+      <div class="sec-head">⚡ 패턴 신호 <span class="badge-cnt" id="sigBadge">0</span></div>
+      <div id="sigList"><div class="empty">신호 감지 중...</div></div>
+    </div>
+
+    <!-- 유동성 구간 -->
+    <div class="sec">
+      <div class="sec-head">💧 유동성 구간</div>
+      <div id="liqList"></div>
+    </div>
+
+    <!-- 활성 FVG -->
+    <div class="sec">
+      <div class="sec-head">📊 활성 FVG (미충전)</div>
+      <div id="fvgList"><div class="empty">FVG 감지 중...</div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 모바일 하단 탭 -->
+<div class="mob-tabs">
+  <button class="mob-tab on" id="mt_chart" onclick="mobTab('chart')"><div class="ti">📈</div>차트</button>
+  <button class="mob-tab" id="mt_signal" onclick="mobTab('signal')"><div class="ti">⚡</div>신호</button>
+  <button class="mob-tab" id="mt_liq" onclick="mobTab('liq')"><div class="ti">💧</div>유동성</button>
+  <button class="mob-tab" id="mt_fvg" onclick="mobTab('fvg')"><div class="ti">📐</div>FVG/OB</button>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const fmt=p=>'$'+Math.round(p).toLocaleString();
+const fmtK=p=>p>=1000?'$'+(p/1000).toFixed(1)+'K':fmt(p);
+const ts=t=>{const d=new Date(t*1000);return`${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`};
+
+let TF='4h', candles=[], chart, series, plRefs=[];
+let signals=JSON.parse(localStorage.getItem('ict_sigs')||'[]');
+let stats=JSON.parse(localStorage.getItem('ict_stat')||'{"bos":0,"mss":0}');
+
+// ── 모바일 탭 ────────────────────────────────
+function mobTab(t){
+  ['chart','signal','liq','fvg'].forEach(x=>{
+    $('mt_'+x)?.classList.remove('on');
+  });
+  $('mt_'+t)?.classList.add('on');
+  const side=$('side');
+  if(t==='chart'){side.classList.remove('show')}
+  else{
+    side.classList.add('show');
+    // 스크롤 to section
+    const map={signal:'sigList',liq:'liqList',fvg:'fvgList'};
+    const el=$(map[t]);
+    if(el) setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'start'}),50);
+  }
+}
+
+// ── TF 변경 ──────────────────────────────────
+function setTF(tf){
+  TF=tf;
+  document.querySelectorAll('.tf').forEach(b=>b.classList.toggle('on',b.textContent===tf.toUpperCase()));
+  loadData();
+  connectWS();
+}
+
+// ── 패턴 감지 ────────────────────────────────
+function swHi(C,i,w=3){
+  if(i<w||i>=C.length-w)return false;
+  for(let j=i-w;j<=i+w;j++)if(j!==i&&C[j].high>=C[i].high)return false;
+  return true;
+}
+function swLo(C,i,w=3){
+  if(i<w||i>=C.length-w)return false;
+  for(let j=i-w;j<=i+w;j++)if(j!==i&&C[j].low<=C[i].low)return false;
+  return true;
+}
+function abody(C,i,n=5){
+  let s=0;for(let k=Math.max(0,i-n);k<i;k++)s+=Math.abs(C[k].close-C[k].open);
+  return Math.max(10,s/n);
+}
+
+function detect(C){
+  const N=C.length;
+  const shs=[],sls=[];
+  for(let i=0;i<N;i++){
+    if(swHi(C,i))shs.push({i,p:C[i].high,t:C[i].time});
+    if(swLo(C,i))sls.push({i,p:C[i].low,t:C[i].time});
+  }
+
+  const sigs=[],markers=[],fvgs=[],obs=[];
+
+  // BOS / MSS / CHoCH
+  for(let i=5;i<N-1;i++){
+    const pSH=shs.filter(s=>s.i<i-1);
+    const pSL=sls.filter(s=>s.i<i-1);
+    if(pSH.length){
+      const ref=pSH[pSH.length-1];
+      if(C[i].close>ref.p&&C[i-1].close<=ref.p){
+        const strong=(C[i].close-C[i].open)>abody(C,i)*1.8;
+        const type=strong?'MSS_UP':'BOS_UP';
+        sigs.push({type,t:C[i].time,price:C[i].close,ref:ref.p});
+        markers.push({time:C[i].time,position:'aboveBar',color:strong?'#d29922':'#3fb950',shape:'arrowUp',text:strong?'MSS':'BOS'});
+      }
+    }
+    if(pSL.length){
+      const ref=pSL[pSL.length-1];
+      if(C[i].close<ref.p&&C[i-1].close>=ref.p){
+        const strong=(C[i].open-C[i].close)>abody(C,i)*1.8;
+        const type=strong?'MSS_DOWN':'BOS_DOWN';
+        sigs.push({type,t:C[i].time,price:C[i].close,ref:ref.p});
+        markers.push({time:C[i].time,position:'belowBar',color:strong?'#ff6b6b':'#f85149',shape:'arrowDown',text:strong?'MSS':'BOS'});
+      }
+    }
+    // CHoCH: 추세 중 반대 고저 형성
+    const rSH=shs.filter(s=>s.i>=i-12&&s.i<i);
+    const rSL=sls.filter(s=>s.i>=i-12&&s.i<i);
+    if(rSH.length>=2){const[a,b]=rSH.slice(-2);if(b.p<a.p&&pSL.length&&C[i].close<pSL[pSL.length-1].p){sigs.push({type:'CHoCH_DOWN',t:C[i].time,price:C[i].close});markers.push({time:C[i].time,position:'belowBar',color:'#f0883e',shape:'circle',text:'CHoCH'});}}
+    if(rSL.length>=2){const[a,b]=rSL.slice(-2);if(b.p>a.p&&pSH.length&&C[i].close>pSH[pSH.length-1].p){sigs.push({type:'CHoCH_UP',t:C[i].time,price:C[i].close});markers.push({time:C[i].time,position:'aboveBar',color:'#f0883e',shape:'circle',text:'CHoCH'});}}
+  }
+
+  // FVG
+  for(let i=2;i<N;i++){
+    if(C[i-2].high<C[i].low)fvgs.push({type:'BULL',top:C[i].low,bot:C[i-2].high,t:C[i-1].time});
+    if(C[i-2].low>C[i].high)fvgs.push({type:'BEAR',top:C[i-2].low,bot:C[i].high,t:C[i-1].time});
+  }
+
+  // OB
+  for(let i=3;i<N-3;i++){
+    const bn=C[i+1].close-C[i+1].open;
+    if(C[i].close<C[i].open&&bn>abody(C,i)*1.2&&C[i+1].close>C[i+1].open)obs.push({type:'BULL',top:C[i].high,bot:C[i].low,t:C[i].time});
+    if(C[i].close>C[i].open&&-bn>abody(C,i)*1.2&&C[i+1].close<C[i+1].open)obs.push({type:'BEAR',top:C[i].high,bot:C[i].low,t:C[i].time});
+  }
+
+  // 스윙 마커
+  shs.filter(s=>s.i>N-60).forEach(s=>markers.push({time:s.t,position:'aboveBar',color:'rgba(210,153,34,0.6)',shape:'circle',text:'SH'}));
+  sls.filter(s=>s.i>N-60).forEach(s=>markers.push({time:s.t,position:'belowBar',color:'rgba(210,153,34,0.6)',shape:'circle',text:'SL'}));
+
+  // 편향
+  const up=sigs.filter(s=>s.type==='BOS_UP'||s.type==='MSS_UP').length;
+  const dn=sigs.filter(s=>s.type==='BOS_DOWN'||s.type==='MSS_DOWN').length;
+  const bias=up>dn?'🟢 강세':dn>up?'🔴 약세':'⚪ 중립';
+  const cp=C[N-1].close;
+  const bslLevels=[69988,70983,74050,75000,80000];
+  const sslLevels=[68699,65632,63030,62510,60000];
+  const nBSL=bslLevels.find(p=>p>cp);
+  const nSSL=[...sslLevels].reverse().find(p=>p<cp);
+  const target=up>dn?(nBSL?fmtK(nBSL):'--'):(nSSL?fmtK(nSSL):'--');
+
+  // 활성 FVG (미충전)
+  const activeFVGs=fvgs.filter(f=>f.type==='BULL'?cp>f.bot:cp<f.top).slice(-10);
+
+  return{sigs,markers,fvgs:activeFVGs,obs:obs.slice(-8),shs:shs.filter(s=>s.i>N-60),sls:sls.filter(s=>s.i>N-60),bias,target};
+}
+
+// ── 차트 ─────────────────────────────────────
+function initChart(){
+  if(chart)chart.remove();
+  const el=$('chart');
+  chart=LightweightCharts.createChart(el,{
+    layout:{background:{color:'#0d1117'},textColor:'#8b949e'},
+    grid:{vertLines:{color:'#1c2128'},horzLines:{color:'#1c2128'}},
+    crosshair:{mode:LightweightCharts.CrosshairMode.Normal},
+    rightPriceScale:{borderColor:'#30363d',scaleMargins:{top:.1,bottom:.1}},
+    timeScale:{borderColor:'#30363d',timeVisible:true,secondsVisible:false},
+  });
+  series=chart.addCandlestickSeries({upColor:'#3fb950',downColor:'#f85149',borderUpColor:'#3fb950',borderDownColor:'#f85149',wickUpColor:'#3fb950',wickDownColor:'#f85149'});
+  const ro=new ResizeObserver(()=>{
+    const r=el.getBoundingClientRect();
+    chart.applyOptions({width:r.width,height:r.height});
+  });
+  ro.observe(el);
+}
+
+function renderChart(C,res){
+  plRefs.forEach(pl=>{try{series.removePriceLine(pl)}catch(e){}});
+  plRefs=[];
+  series.setData(C.map(c=>({time:c.time,open:c.open,high:c.high,low:c.low,close:c.close})));
+
+  // FVG
+  res.fvgs.slice(-8).forEach(f=>{
+    const b=f.type==='BULL';
+    plRefs.push(series.createPriceLine({price:f.top,color:b?'rgba(88,166,255,.55)':'rgba(248,81,73,.55)',lineWidth:1,lineStyle:2,axisLabelVisible:false,title:b?'FVG↑':'FVG↓'}));
+    plRefs.push(series.createPriceLine({price:f.bot,color:b?'rgba(88,166,255,.25)':'rgba(248,81,73,.25)',lineWidth:1,lineStyle:2,axisLabelVisible:false}));
+  });
+  // OB
+  res.obs.forEach(ob=>{
+    const b=ob.type==='BULL';
+    plRefs.push(series.createPriceLine({price:ob.top,color:b?'rgba(88,166,255,.9)':'rgba(163,113,247,.9)',lineWidth:2,lineStyle:0,axisLabelVisible:true,title:b?'OB↑':'OB↓'}));
+    plRefs.push(series.createPriceLine({price:ob.bot,color:b?'rgba(88,166,255,.35)':'rgba(163,113,247,.35)',lineWidth:1,lineStyle:2,axisLabelVisible:false}));
+  });
+  // 유동성
+  [{p:74050,c:'rgba(63,185,80,.9)',l:'BSL 03/04⭐'},{p:70983,c:'rgba(63,185,80,.7)',l:'BSL 02/15'},{p:69988,c:'rgba(63,185,80,.7)',l:'BSL 02/25'},{p:75000,c:'rgba(163,113,247,.6)',l:'$75K'},{p:70000,c:'rgba(163,113,247,.5)',l:'$70K'},{p:68699,c:'rgba(248,81,73,.7)',l:'SSL 02/21'},{p:65632,c:'rgba(248,81,73,.85)',l:'SSL 02/19'},{p:65000,c:'rgba(163,113,247,.5)',l:'$65K'},{p:63030,c:'rgba(248,81,73,.8)',l:'SSL 02/28'},{p:62510,c:'rgba(248,81,73,1)',l:'주봉SSL⭐'}].forEach(l=>plRefs.push(series.createPriceLine({price:l.p,color:l.c,lineWidth:1,lineStyle:3,axisLabelVisible:true,title:l.l})));
+  // 현재가
+  plRefs.push(series.createPriceLine({price:C[C.length-1].close,color:'#58a6ff',lineWidth:2,lineStyle:0,axisLabelVisible:true,title:'▶'}));
+
+  const mk=[...res.markers].sort((a,b)=>a.time-b.time);
+  const seen=new Set();
+  series.setMarkers(mk.filter(m=>{const k=`${m.time}_${m.text}`;if(seen.has(k))return false;seen.add(k);return true;}));
+  chart.timeScale().fitContent();
+}
+
+// ── UI 업데이트 ───────────────────────────────
+function updateUI(C,res){
+  const cp=C[C.length-1].close;
+  const prev=C[C.length-2]?.close||cp;
+  const chg=((cp-prev)/prev*100);
+  const green=chg>=0;
+
+  $('hPrice').textContent=fmt(cp);
+  $('hPrice').style.color=green?'var(--green)':'var(--red)';
+  $('hChg').textContent=(green?'+':'')+chg.toFixed(2)+'%';
+  $('hChg').style.cssText=`background:${green?'#1a3a1a':'#3a1a1a'};color:${green?'var(--green)':'var(--red)'}`;
+  $('hUpdated').textContent=new Date().toLocaleTimeString('ko-KR');
+
+  // 새 신호 처리
+  const seen=new Set(signals.map(s=>`${s.type}_${s.t}`));
+  const fresh=res.sigs.filter(s=>!seen.has(`${s.type}_${s.t}`));
+  if(fresh.length){
+    fresh.forEach(s=>{if(s.type.includes('BOS'))stats.bos++;else if(s.type.includes('MSS'))stats.mss++;});
+    signals=[...fresh,...signals].slice(0,300);
+    localStorage.setItem('ict_sigs',JSON.stringify(signals));
+    localStorage.setItem('ict_stat',JSON.stringify(stats));
+  }
+
+  // 구조 stats
+  const bosCount=stats.bos, mssCount=stats.mss, fvgCount=res.fvgs.length, obCount=res.obs.length;
+  ['d_bias','m_bias'].forEach(id=>{const el=$(id);if(el){el.textContent=res.bias;el.style.color=res.bias.includes('강세')?'var(--green)':res.bias.includes('약세')?'var(--red)':'var(--muted)';}});
+  ['d_target','m_target'].forEach(id=>{if($(id))$(id).textContent=res.target;});
+  ['d_bos','m_bos'].forEach(id=>{if($(id))$(id).textContent=bosCount;});
+  ['d_mss','m_mss'].forEach(id=>{if($(id))$(id).textContent=mssCount;});
+  ['d_fvg','m_fvg'].forEach(id=>{if($(id))$(id).textContent=fvgCount;});
+  ['d_ob','m_ob'].forEach(id=>{if($(id))$(id).textContent=obCount;});
+  $('sigBadge').textContent=signals.length;
+
+  // 신호 config
+  const cfg={
+    BOS_UP:{icon:'🟢',bg:'#1a3a1a',color:'var(--green)',name:'BOS ▲ 구조 돌파',desc:'이전 스윙 고점 돌파 → 추세 지속 신호'},
+    BOS_DOWN:{icon:'🔴',bg:'#3a1a1a',color:'var(--red)',name:'BOS ▼ 구조 돌파',desc:'이전 스윙 저점 이탈 → 하락 추세 지속'},
+    MSS_UP:{icon:'🟡',bg:'#2a2a1a',color:'var(--yellow)',name:'MSS ↑ 구조 전환',desc:'강한 디스플레이스먼트로 추세 전환 확인'},
+    MSS_DOWN:{icon:'🟠',bg:'#3a1a1a',color:'#ff6b6b',name:'MSS ↓ 구조 전환',desc:'강한 하락으로 상승 구조 붕괴'},
+    CHoCH_UP:{icon:'🔵',bg:'#1a2a3a',color:'var(--blue)',name:'CHoCH ↑ 성격 변화',desc:'하락 추세 중 고점 갱신 → 반전 경고'},
+    CHoCH_DOWN:{icon:'🟣',bg:'#2a1a3a',color:'var(--purple)',name:'CHoCH ↓ 성격 변화',desc:'상승 추세 중 저점 이탈 → 반전 경고'},
+  };
+
+  // 신호 리스트
+  $('sigList').innerHTML=signals.slice(0,50).map((s,i)=>{
+    const c=cfg[s.type]||{icon:'⚪',bg:'var(--bg3)',color:'var(--muted)',name:s.type,desc:''};
+    return`<div class="sig ${i<fresh.length?'fresh':''}">
+      <div class="sig-ic" style="background:${c.bg}">${c.icon}</div>
+      <div class="sig-info">
+        <div class="sig-name" style="color:${c.color}">${c.name}</div>
+        <div class="sig-desc">${c.desc}</div>
+      </div>
+      <div class="sig-right">
+        <div class="sig-price" style="color:${c.color}">${fmt(s.price)}</div>
+        <div class="sig-time">${ts(s.t)} · ${TF.toUpperCase()}</div>
+      </div>
+    </div>`;
+  }).join('')||'<div class="empty">신호 없음</div>';
+
+  // 유동성 구간
+  const liq=[
+    {name:'일봉 고점 03/04',tf:'일봉',p:74050,type:'BSL'},
+    {name:'일봉 고점 02/15',tf:'일봉',p:70983,type:'BSL'},
+    {name:'일봉 고점 02/25',tf:'일봉',p:69988,type:'BSL'},
+    {name:'$70,000 라운드',tf:'심리적',p:70000,type:'ROUND'},
+    {name:'▶ 현재가',tf:'--',p:cp,type:'NOW'},
+    {name:'일봉 고점 02/21',tf:'일봉',p:68699,type:'SSL'},
+    {name:'일봉 저점 02/19',tf:'일봉',p:65632,type:'SSL'},
+    {name:'$65,000 라운드',tf:'심리적',p:65000,type:'ROUND'},
+    {name:'일봉 저점 02/28',tf:'일봉',p:63030,type:'SSL'},
+    {name:'주봉 저점 02/23 ⭐',tf:'주봉',p:62510,type:'SSL'},
+  ].sort((a,b)=>b.p-a.p);
+  const tc={BSL:'var(--green)',SSL:'var(--red)',ROUND:'var(--purple)',NOW:'var(--blue)'};
+  $('liqList').innerHTML=liq.map(l=>{
+    const d=((l.p-cp)/cp*100);
+    const ds=l.type==='NOW'?'현재가':(d>0?'+':'')+d.toFixed(2)+'%';
+    const dc=l.type==='NOW'?'var(--blue)':d>0?'var(--green)':'var(--red)';
+    const isNow=l.type==='NOW';
+    return`<div class="liq" style="${isNow?'background:#1a2a3a;':''}">
+      <div class="liq-left">
+        <div class="liq-bar" style="background:${tc[l.type]||'var(--muted)'}"></div>
+        <div><div class="liq-name" style="${isNow?'color:var(--blue);font-weight:700':''}"> ${l.name}</div><div class="liq-tf">${l.tf}</div></div>
+      </div>
+      <div class="liq-right">
+        <div class="liq-price" style="color:${isNow?'var(--blue)':tc[l.type]||'var(--muted)'}">${fmt(l.p)}</div>
+        <div class="liq-dist" style="color:${dc}">${ds}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // FVG 리스트
+  $('fvgList').innerHTML=res.fvgs.slice(-8).reverse().map(f=>{
+    const b=f.type==='BULL';
+    const dTop=((f.top-cp)/cp*100);
+    const dBot=((f.bot-cp)/cp*100);
+    return`<div class="fvg">
+      <div>
+        <div class="fvg-range" style="color:${b?'var(--blue)':'var(--red)'}">${b?'📈 상승 FVG':'📉 하락 FVG'}</div>
+        <div class="fvg-meta">${ts(f.t)} · ${TF.toUpperCase()}</div>
+        <div class="fvg-meta" style="margin-top:3px">범위: ${fmt(f.top)} ~ ${fmt(f.bot)}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="fvg-tag" style="background:${b?'#1a2a3a':'#3a1a1a'};color:${b?'var(--blue)':'var(--red)'};border:1px solid ${b?'var(--blue)':'var(--red)'}">
+          ${(dTop>0?'+':'')+dTop.toFixed(1)}%<br>~${(dBot>0?'+':'')+dBot.toFixed(1)}%
+        </div>
+      </div>
+    </div>`;
+  }).join('')||'<div class="empty">활성 FVG 없음</div>';
+}
+
+// ── 데이터 로드 ───────────────────────────────
+async function loadData(){
+  try{
+    const lim=TF==='1d'?300:TF==='4h'?300:200;
+    const r=await fetch(`https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=${TF}&limit=${lim}`);
+    const d=await r.json();
+    candles=d.map(x=>({time:Math.floor(x[0]/1000),open:+x[1],high:+x[2],low:+x[3],close:+x[4]}));
+    const res=detect(candles);
+    renderChart(candles,res);
+    updateUI(candles,res);
+  }catch(e){$('hUpdated').textContent='⚠️ 오류 재시도중...';}
+}
+
+// ── WebSocket ────────────────────────────────
+let ws;
+function connectWS(){
+  if(ws){try{ws.close()}catch(e){}}
+  ws=new WebSocket(`wss://stream.binance.com:9443/ws/btcusdt@kline_${TF}`);
+  ws.onmessage=e=>{
+    const k=JSON.parse(e.data).k;
+    if(!candles.length)return;
+    const nc={time:Math.floor(k.t/1000),open:+k.o,high:+k.h,low:+k.l,close:+k.c};
+    const last=candles[candles.length-1];
+    if(last.time===nc.time){candles[candles.length-1]=nc;}
+    else if(nc.time>last.time){candles.push(nc);if(candles.length>500)candles.shift();}
+    series?.update(nc);
+    $('hPrice').textContent=fmt(nc.close);
+    $('hPrice').style.color=nc.close>=nc.open?'var(--green)':'var(--red)';
+  };
+  ws.onclose=()=>setTimeout(connectWS,3000);
+  ws.onerror=()=>ws.close();
+}
+
+// ── 초기화 ───────────────────────────────────
+initChart();
+loadData();
+connectWS();
+setInterval(loadData,30000);  // 30초마다 패턴 재감지
+</script>
+</body>
+</html>
