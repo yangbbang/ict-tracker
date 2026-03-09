@@ -33,40 +33,43 @@ nav::-webkit-scrollbar{display:none}
 .page.on{display:flex}
 
 /* ── 실시간 ── */
-.rt{flex:1;display:grid;grid-template-columns:1fr 220px;overflow:hidden;min-height:0}
-@media(max-width:600px){.rt{grid-template-columns:1fr;grid-template-rows:62% 38%}}
+.rt{flex:1;display:grid;grid-template-columns:1fr 230px;overflow:hidden;min-height:0}
+@media(max-width:600px){.rt{grid-template-columns:1fr;grid-template-rows:60% 40%}}
 .chart-wrap{position:relative;overflow:hidden}
 #chart{width:100%;height:100%}
 #overlay{position:absolute;top:0;left:0;pointer-events:none}
 
-/* 패널 */
 .panel{display:flex;flex-direction:column;border-left:1px solid var(--border);overflow:hidden;background:var(--bg)}
-.panel-head{padding:10px 14px;background:var(--bg2);border-bottom:1px solid var(--border);font-size:.67rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;flex-shrink:0;display:flex;justify-content:space-between}
-.ph-cnt{color:var(--text);font-size:.75rem;font-weight:600}
+.panel-head{padding:9px 14px;background:var(--bg2);border-bottom:1px solid var(--border);font-size:.67rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;flex-shrink:0;display:flex;justify-content:space-between;align-items:center}
+.ph-cnt{color:var(--text);font-size:.74rem;font-weight:600}
 .setups{flex:1;overflow-y:auto}
 .setups::-webkit-scrollbar{width:2px}
 .setups::-webkit-scrollbar-thumb{background:var(--border)}
-.setup-card{padding:12px 14px;border-bottom:1px solid var(--border);border-left:3px solid transparent}
-.setup-card.long{border-left-color:var(--g)}
-.setup-card.short{border-left-color:var(--r)}
-.sc-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.sc-type{font-size:.78rem;font-weight:700}
-.sc-pat{font-size:.65rem;color:var(--muted);padding:1px 5px;background:var(--bg3);border-radius:3px}
-.sc-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
-.sc-lbl{font-size:.65rem;color:var(--muted)}
-.sc-val{font-size:.76rem;font-weight:600}
-.sc-pct{font-size:.63rem;margin-left:3px}
-.prog-bg{height:2px;background:var(--bg3);border-radius:1px;margin-top:7px}
-.prog-fill{height:100%;border-radius:1px;transition:width .3s}
-.result-row{display:flex;align-items:center;gap:9px;padding:9px 14px;border-bottom:1px solid var(--border)}
-.res-ico{font-size:1rem}
-.res-b{flex:1}
-.res-n{font-size:.74rem;font-weight:500}
-.res-m{font-size:.64rem;color:var(--muted);margin-top:1px}
-.res-v{font-size:.78rem;font-weight:700}
+
+/* 셋업 카드 */
+.sc{padding:11px 13px;border-bottom:1px solid var(--border);border-left:3px solid transparent}
+.sc.L{border-left-color:var(--g)}.sc.S{border-left-color:var(--r)}
+.sc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.sc-dir{font-size:.76rem;font-weight:700}
+.sc-tags{display:flex;gap:4px;align-items:center}
+.sc-pat{font-size:.62rem;padding:1px 5px;background:var(--bg3);border-radius:3px;color:var(--muted)}
+.sc-rr{font-size:.62rem;padding:1px 5px;border-radius:3px;font-weight:600}
+.sc-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px}
+.sc-lbl{font-size:.64rem;color:var(--muted)}
+.sc-val{font-size:.74rem;font-weight:600}
+.sc-sub{font-size:.62rem;margin-left:3px}
+.pb{height:2px;background:var(--bg3);border-radius:1px;margin-top:7px;overflow:hidden}
+.pbf{height:100%;border-radius:1px;transition:width .3s}
+
+/* 완료된 셋업 */
+.done-hd{padding:6px 14px;font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;background:var(--bg2);border-bottom:1px solid var(--border)}
+.res{display:flex;align-items:center;gap:8px;padding:8px 13px;border-bottom:1px solid var(--border)}
+.res-i{font-size:.9rem}.res-b{flex:1}
+.res-n{font-size:.72rem;font-weight:500}.res-m{font-size:.62rem;color:var(--muted);margin-top:1px}
+.res-v{font-size:.76rem;font-weight:700;text-align:right}
+
 .empty-s{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;color:var(--muted);padding:20px;text-align:center}
-.empty-s .ei{font-size:1.6rem;opacity:.25}
-.empty-s .et{font-size:.75rem;line-height:1.5}
+.empty-s .ei{font-size:1.5rem;opacity:.2}.empty-s .et{font-size:.74rem;line-height:1.5}
 
 /* ── 백테스팅 ── */
 .btwrap{padding:16px;overflow-y:auto;max-width:800px;margin:0 auto;width:100%}
@@ -76,44 +79,40 @@ nav::-webkit-scrollbar{display:none}
 .krow{display:grid;grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:8px;margin-bottom:14px}
 .kpi{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 12px}
 .kl{font-size:.58rem;color:var(--muted);margin-bottom:3px;text-transform:uppercase;letter-spacing:.3px}
-.kv{font-size:1.2rem;font-weight:600}
-.ks{font-size:.63rem;color:var(--muted);margin-top:2px}
+.kv{font-size:1.18rem;font-weight:600}.ks{font-size:.62rem;color:var(--muted);margin-top:2px}
 .card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:12px}
 .ch{padding:9px 13px;border-bottom:1px solid var(--border);font-size:.76rem;font-weight:600;display:flex;justify-content:space-between}
-.ch span:last-child{font-size:.66rem;color:var(--muted);font-weight:400}
+.ch span:last-child{font-size:.65rem;color:var(--muted);font-weight:400}
 table{width:100%;border-collapse:collapse}
-th{padding:6px 11px;text-align:left;font-size:.6rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;background:var(--bg3)}
-td{padding:8px 11px;border-top:1px solid var(--border);font-size:.76rem}
+th{padding:6px 10px;text-align:left;font-size:.6rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;background:var(--bg3)}
+td{padding:8px 10px;border-top:1px solid var(--border);font-size:.75rem}
 tr:hover td{background:rgba(255,255,255,.012)}
 .bar-r{display:flex;align-items:center;gap:5px}
 .bar-bg{flex:1;height:3px;background:var(--border);border-radius:2px;max-width:55px}
 .bar-f{height:100%;border-radius:2px}
-.ev{padding:1px 6px;border-radius:4px;font-size:.67rem;font-weight:600}
+.ev{padding:1px 6px;border-radius:4px;font-size:.66rem;font-weight:600}
 .evg{background:rgba(34,197,94,.1);color:var(--g)}.evr{background:rgba(239,68,68,.1);color:var(--r)}.evy{background:rgba(245,158,11,.1);color:var(--y)}
 .hms{overflow-x:auto}
-.hg{display:grid;grid-template-columns:58px repeat(7,1fr);gap:2px;min-width:460px;padding:9px 11px}
-.hc{padding:5px 2px;border-radius:3px;text-align:center;font-size:.62rem}
-.hh{color:var(--muted);font-size:.59rem;font-weight:600}.hl{color:var(--muted);font-size:.66rem}
+.hg{display:grid;grid-template-columns:58px repeat(7,1fr);gap:2px;min-width:450px;padding:9px 11px}
+.hc{padding:5px 2px;border-radius:3px;text-align:center;font-size:.61rem}
+.hh{color:var(--muted);font-size:.58rem;font-weight:600}.hl{color:var(--muted);font-size:.65rem}
 .c9{background:rgba(34,197,94,.16);color:var(--g)}.c6{background:rgba(34,197,94,.08);color:#86efac}
 .c4{background:rgba(245,158,11,.1);color:var(--y)}.c2{background:rgba(239,68,68,.08);color:#fca5a5}.c0{background:var(--bg3);color:var(--muted)}
 
 /* ── 유동성 ── */
 .liqwrap{flex:1;display:grid;grid-template-columns:1fr 240px;overflow:hidden;min-height:0}
 @media(max-width:600px){.liqwrap{grid-template-columns:1fr;grid-template-rows:55% 45%}}
-.liq-chart-wrap{position:relative;overflow:hidden}
+.liq-cw{position:relative;overflow:hidden}
 #liqChart{width:100%;height:100%}
 #liqOverlay{position:absolute;top:0;left:0;pointer-events:none}
 .liq-list{overflow-y:auto;border-left:1px solid var(--border);display:flex;flex-direction:column}
 .liq-list::-webkit-scrollbar{width:2px}
-.liq-list::-webkit-scrollbar-thumb{background:var(--border)}
 .liq-hd{padding:9px 13px;background:var(--bg2);border-bottom:1px solid var(--border);font-size:.67rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;flex-shrink:0;display:flex;justify-content:space-between}
 .liq-cp{color:var(--b);font-weight:700}
 .liq-item{padding:9px 13px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-.ln{font-size:.76rem;font-weight:500}
-.ltf{font-size:.61rem;color:var(--muted);margin-top:1px}
+.ln{font-size:.76rem;font-weight:500}.ltf{font-size:.61rem;color:var(--muted);margin-top:1px}
 .ltag{font-size:.59rem;padding:1px 5px;border-radius:3px;font-weight:600;margin-left:4px}
-.lp{font-size:.78rem;font-weight:600;text-align:right}
-.ld{font-size:.64rem;text-align:right;margin-top:1px}
+.lp{font-size:.78rem;font-weight:600;text-align:right}.ld{font-size:.64rem;text-align:right;margin-top:1px}
 </style>
 </head>
 <body>
@@ -146,7 +145,7 @@ tr:hover td{background:rgba(255,255,255,.012)}
     <div class="panel">
       <div class="panel-head">활성 셋업 <span class="ph-cnt" id="setupCnt">0</span></div>
       <div class="setups" id="setupList">
-        <div class="empty-s"><div class="ei">📡</div><div class="et">신호 감지 중...<br>BOS · 구조전환 발생 시<br>자동으로 표시됩니다</div></div>
+        <div class="empty-s"><div class="ei">📡</div><div class="et">신호 대기 중<br>CISD · 터틀수프 · OB리턴<br>FVG · BOS · OTE 감지</div></div>
       </div>
     </div>
   </div>
@@ -156,19 +155,19 @@ tr:hover td{background:rgba(255,255,255,.012)}
 <div class="page" id="p1">
 <div class="btwrap">
   <div class="ptit">백테스팅 결과</div>
-  <div class="psub">BTC/USDT · 5TF · 10패턴 · RR 1:2</div>
+  <div class="psub">BTC/USDT · 5TF · 10패턴 · 자연 RR (목표 BSL/SSL 기준)</div>
   <div class="krow">
-    <div class="kpi"><div class="kl">최고 EV</div><div class="kv" style="color:var(--g)">+0.92</div><div class="ks">CISD</div></div>
+    <div class="kpi"><div class="kl">최고 EV</div><div class="kv" style="color:var(--g)">+0.92</div><div class="ks">CISD 4H</div></div>
     <div class="kpi"><div class="kl">분석 거래</div><div class="kv" style="color:var(--b)">1,366</div><div class="ks">5TF×10패턴</div></div>
     <div class="kpi"><div class="kl">수익 패턴</div><div class="kv" style="color:var(--p)">6/10</div><div class="ks">EV 플러스</div></div>
-    <div class="kpi"><div class="kl">최강 조합</div><div class="kv" style="color:var(--y);font-size:.82rem">CISD+브레이커</div><div class="ks">4H</div></div>
+    <div class="kpi"><div class="kl">최강 조합</div><div class="kv" style="color:var(--y);font-size:.8rem">CISD+OTE</div><div class="ks">4H 진입</div></div>
   </div>
   <div class="card">
-    <div class="ch"><span>패턴 순위</span><span>전체 TF 합산</span></div>
+    <div class="ch"><span>패턴 순위</span><span>TP = 다음 BSL/SSL 기준</span></div>
     <table><thead><tr><th></th><th>패턴</th><th>거래</th><th>승률</th><th>EV</th></tr></thead><tbody id="btB"></tbody></table>
   </div>
   <div class="card">
-    <div class="ch"><span>히트맵</span></div>
+    <div class="ch"><span>히트맵</span><span>TF × 패턴 기대값</span></div>
     <div class="hms"><div class="hg">
       <div class="hc hh"></div><div class="hc hh">OB리턴</div><div class="hc hh">터틀</div><div class="hc hh">브레이커</div><div class="hc hh">AMD</div><div class="hc hh">CISD</div><div class="hc hh">TGIF</div><div class="hc hh">SMT</div>
       <div class="hc hl">일봉</div><div class="hc c6">+0.50</div><div class="hc c2">-0.33</div><div class="hc c4">+0.09</div><div class="hc c2">-0.20</div><div class="hc c9">+0.80⭐</div><div class="hc c2">-0.05</div><div class="hc c2">-0.08</div>
@@ -178,25 +177,21 @@ tr:hover td{background:rgba(255,255,255,.012)}
     </div></div>
   </div>
   <div class="card">
-    <div class="ch"><span>OTE 백테스트 결과</span><span>Discount SSL Sweep → 61.8~78.6% 진입</span></div>
-    <table><thead><tr><th>TF</th><th>거래</th><th>승률</th><th>EV</th><th>판정</th></tr></thead>
-    <tbody>
-      <tr><td>일봉</td><td>11건</td><td><div class="bar-r"><div class="bar-bg"><div class="bar-f" style="width:27%;background:var(--r)"></div></div><span style="font-size:.7rem;color:var(--r)">27.3%</span></div></td><td><span class="ev evr">-0.18</span></td><td style="font-size:.72rem;color:var(--muted)">⚠️ 단독주의</td></tr>
-      <tr><td>4시간</td><td>18건</td><td><div class="bar-r"><div class="bar-bg"><div class="bar-f" style="width:22%;background:var(--r)"></div></div><span style="font-size:.7rem;color:var(--r)">22.2%</span></div></td><td><span class="ev evr">-0.33</span></td><td style="font-size:.72rem;color:var(--muted)">⚠️ 단독주의</td></tr>
-      <tr><td>1시간</td><td>20건</td><td><div class="bar-r"><div class="bar-bg"><div class="bar-f" style="width:25%;background:var(--r)"></div></div><span style="font-size:.7rem;color:var(--r)">25.0%</span></div></td><td><span class="ev evr">-0.25</span></td><td style="font-size:.72rem;color:var(--muted)">⚠️ 단독주의</td></tr>
+    <div class="ch"><span>OTE 결과</span><span>SSL 스윕 후 61.8~78.6% 진입</span></div>
+    <table><thead><tr><th>TF</th><th>거래</th><th>승률</th><th>EV</th><th>메모</th></tr></thead><tbody>
+      <tr><td>일봉</td><td>11</td><td><div class="bar-r"><div class="bar-bg"><div class="bar-f" style="width:27%;background:var(--r)"></div></div><span style="font-size:.7rem;color:var(--r)">27%</span></div></td><td><span class="ev evr">-0.18</span></td><td style="font-size:.69rem;color:var(--muted)">단독주의</td></tr>
+      <tr><td>4H</td><td>18</td><td><div class="bar-r"><div class="bar-bg"><div class="bar-f" style="width:22%;background:var(--r)"></div></div><span style="font-size:.7rem;color:var(--r)">22%</span></div></td><td><span class="ev evr">-0.33</span></td><td style="font-size:.69rem;color:var(--muted)">단독주의</td></tr>
+      <tr><td>1H</td><td>20</td><td><div class="bar-r"><div class="bar-bg"><div class="bar-f" style="width:25%;background:var(--r)"></div></div><span style="font-size:.7rem;color:var(--r)">25%</span></div></td><td><span class="ev evr">-0.25</span></td><td style="font-size:.69rem;color:var(--muted)">단독주의</td></tr>
     </tbody></table>
-    <div style="padding:10px 13px;font-size:.74rem;color:#a0a8b8;line-height:1.6;border-top:1px solid var(--border)">
-      💡 <b>OTE 단독</b>은 BTC/USDT에서 EV 마이너스. 하지만 <b>CISD + OTE + HTF 편향 정렬</b> 시 승률 대폭 상승. OTE는 <b>진입 타이밍 도구</b>로 활용하는 게 핵심.
-    </div>
+    <div style="padding:9px 12px;font-size:.73rem;color:#a0a8b8;line-height:1.5;border-top:1px solid var(--border)">💡 OTE는 단독 사용 시 마이너스. <b>CISD 후 OTE 구간 진입</b>으로 활용할 것.</div>
   </div>
   <div class="card">
-    <div class="ch"><span>인사이트</span></div>
-    <div style="padding:11px 13px;font-size:.76rem;line-height:1.7;color:#b8c0cc;display:flex;flex-direction:column;gap:5px">
-      <div>🏆 <b>CISD</b> — 63.9% 승률, EV +0.92. 4H +1.48 압도적.</div>
-      <div>🔥 <b>브레이커 블록</b> — 모든 TF 플러스. 단타 최적.</div>
-      <div>📐 <b>OTE</b> — 단독 사용 시 EV 마이너스. CISD/구조전환 후 진입 타이밍 도구로 활용.</div>
-      <div>⚠️ <b>터틀·AMD·SMT</b> — 단독 사용 금지.</div>
-      <div>🎯 최강: <b>4H CISD + OTE 진입 + 브레이커 확인</b></div>
+    <div class="ch"><span>핵심 인사이트</span></div>
+    <div style="padding:11px 13px;font-size:.75rem;line-height:1.7;color:#b8c0cc;display:flex;flex-direction:column;gap:5px">
+      <div>🏆 <b>CISD</b> — 63.9% 승률 / TP: 다음 BSL, SL: 디스플레이스먼트 저점</div>
+      <div>🔥 <b>브레이커 블록</b> — 모든 TF 플러스 / TP: 이전 고점 유동성</div>
+      <div>📐 <b>OTE</b> — 진입 타이밍 도구. CISD/구조전환 후 OTE 구간 진입</div>
+      <div>🎯 최강: <b>HTF CISD → LTF OTE 구간 진입 → 다음 BSL 목표</b></div>
     </div>
   </div>
 </div>
@@ -205,7 +200,7 @@ tr:hover td{background:rgba(255,255,255,.012)}
 <!-- ══ 유동성 ══ -->
 <div class="page" id="p2">
   <div class="liqwrap">
-    <div class="liq-chart-wrap" id="liqChartWrap">
+    <div class="liq-cw" id="liqChartWrap">
       <div id="liqChart"></div>
       <canvas id="liqOverlay"></canvas>
     </div>
@@ -220,7 +215,6 @@ tr:hover td{background:rgba(255,255,255,.012)}
 <script>
 const $=id=>document.getElementById(id);
 const fmt=p=>'$'+Math.round(p).toLocaleString();
-const fmtK=p=>p>=1000?'$'+(p/1000).toFixed(1)+'K':fmt(p);
 const pct=(a,b)=>((a-b)/b*100);
 
 let TF='4h', candles=[], chart, series;
@@ -241,158 +235,267 @@ function setTF(tf){
   loadData(); connectWS();
 }
 
-// ── 패턴 감지 ────────────────────────────────
+// ── 스윙 감지 ────────────────────────────────
 function swH(C,i,w=3){if(i<w||i>=C.length-w)return false;for(let j=i-w;j<=i+w;j++)if(j!==i&&C[j].high>=C[i].high)return false;return true;}
 function swL(C,i,w=3){if(i<w||i>=C.length-w)return false;for(let j=i-w;j<=i+w;j++)if(j!==i&&C[j].low<=C[i].low)return false;return true;}
-function ab(C,i,n=5){let s=0;for(let k=Math.max(0,i-n);k<i;k++)s+=Math.abs(C[k].close-C[k].open);return Math.max(10,s/n);}
+function atrN(C,i,n=5){let s=0;for(let k=Math.max(0,i-n);k<i;k++)s+=Math.abs(C[k].close-C[k].open);return Math.max(10,s/n);}
 
-// ── OTE / Discount-Premium 감지 ──────────────
-function detectOTE(C){
-  const N=C.length, SH=[], SL=[];
-  for(let i=0;i<N;i++){if(swH(C,i))SH.push({i,p:C[i].high,t:C[i].time});if(swL(C,i))SL.push({i,p:C[i].low,t:C[i].time});}
-  const oteZones=[], fibLines=[], discPrem=[];
-
-  SH.slice(-8).forEach(sh=>{
-    const nextLows=SL.filter(sl=>sl.i>sh.i&&sl.i<sh.i+25);
-    if(!nextLows.length)return;
-    const sl=nextLows[0];
-    const H=sh.p, L=sl.p, rng=H-L;
-    if(rng/H<0.015)return;
-
-    const f50=H-rng*.5, f618=H-rng*.618, f705=H-rng*.705, f786=H-rng*.786;
-
-    // Discount/Premium 박스
-    discPrem.push({
-      swingHigh:H, swingLow:L, mid:f50,
-      startTime:sh.t, endTime:sl.t,
-      premFill:'rgba(239,68,68,0.06)', premBorder:'rgba(239,68,68,0.3)',
-      discFill:'rgba(34,197,94,0.06)', discBorder:'rgba(34,197,94,0.3)',
-    });
-
-    // OTE 구간 박스 (61.8~78.6%)
-    oteZones.push({
-      top:f618, bot:f786, startTime:sl.t,
-      fillColor:'rgba(245,158,11,0.1)', borderColor:'rgba(245,158,11,0.55)',
-      label:'OTE', labelColor:'#f59e0b'
-    });
-
-    // 피보나치 레벨 라인
-    [{p:f50,l:'50%',c:'rgba(200,200,200,.35)'},{p:f618,l:'61.8%',c:'rgba(245,158,11,.55)'},{p:f705,l:'70.5%',c:'rgba(245,158,11,.7)'},{p:f786,l:'78.6%',c:'rgba(245,158,11,.55)'}].forEach(f=>{
-      fibLines.push({price:f.p,label:f.l,color:f.c,startTime:sh.t});
-    });
-  });
-
-  return{oteZones:oteZones.slice(-2), fibLines:fibLines.slice(-16), discPrem:discPrem.slice(-2)};
+// ── 셋업 생성 헬퍼 ───────────────────────────
+function mkSetup(id,type,pattern,entry,sl,tp,time){
+  const rr=Math.abs(tp-entry)/Math.abs(sl-entry);
+  return{id,type,pattern,entry,sl,tp,time,status:'active',rr};
+}
+function checkOut(s,C,from){
+  for(let j=from+1;j<Math.min(from+80,C.length);j++){
+    if(s.type==='LONG'){if(C[j].low<=s.sl){s.status='sl_hit';s.exitPrice=s.sl;return;}if(C[j].high>=s.tp){s.status='tp_hit';s.exitPrice=s.tp;return;}}
+    else{if(C[j].high>=s.sl){s.status='sl_hit';s.exitPrice=s.sl;return;}if(C[j].low<=s.tp){s.status='tp_hit';s.exitPrice=s.tp;return;}}
+  }
 }
 
+// ── 전체 분석 ────────────────────────────────
 function analyzeCandles(C){
-  const N=C.length, shs=[], sls=[];
-  for(let i=0;i<N;i++){if(swH(C,i))shs.push({i,p:C[i].high,t:C[i].time});if(swL(C,i))sls.push({i,p:C[i].low,t:C[i].time});}
-  const cp=C[N-1].close;
+  const N=C.length;
+  const SH=[], SL=[];
+  for(let i=0;i<N;i++){if(swH(C,i))SH.push({i,p:C[i].high,t:C[i].time});if(swL(C,i))SL.push({i,p:C[i].low,t:C[i].time});}
+
+  // 다음 BSL / SSL (TP 목표)
+  function nextBSL(from,price){const c=SH.filter(s=>s.p>price*1.002);return c.length?c[0].p:price*1.025;}
+  function nextSSL(from,price){const c=SL.filter(s=>s.p<price*0.998);return c.length?c[0].p:price*0.975;}
 
   // ── FVG 감지 ──
   const fvgs=[];
   for(let i=2;i<N;i++){
-    if(C[i-2].high<C[i].low){// 상승 FVG
-      let mitigated=false;
-      for(let j=i+1;j<N;j++){if(C[j].low<=C[i-2].high){mitigated=true;break;}}
-      if(!mitigated) fvgs.push({type:'BULL',top:C[i].low,bot:C[i-2].high,startTime:C[i-1].time,label:'FVG',fillColor:'rgba(34,197,94,0.07)',borderColor:'rgba(34,197,94,0.5)',labelColor:'#22c55e'});
-    }
-    if(C[i-2].low>C[i].high){// 하락 FVG
-      let mitigated=false;
-      for(let j=i+1;j<N;j++){if(C[j].high>=C[i-2].low){mitigated=true;break;}}
-      if(!mitigated) fvgs.push({type:'BEAR',top:C[i-2].low,bot:C[i].high,startTime:C[i-1].time,label:'FVG',fillColor:'rgba(239,68,68,0.07)',borderColor:'rgba(239,68,68,0.5)',labelColor:'#ef4444'});
-    }
+    if(C[i-2].high<C[i].low){let m=false;for(let j=i+1;j<N;j++)if(C[j].low<=C[i-2].high){m=true;break;}if(!m)fvgs.push({type:'BULL',top:C[i].low,bot:C[i-2].high,startTime:C[i-1].time,label:'FVG',fillColor:'rgba(34,197,94,.07)',borderColor:'rgba(34,197,94,.5)',labelColor:'#22c55e'});}
+    if(C[i-2].low>C[i].high){let m=false;for(let j=i+1;j<N;j++)if(C[j].high>=C[i-2].low){m=true;break;}if(!m)fvgs.push({type:'BEAR',top:C[i-2].low,bot:C[i].high,startTime:C[i-1].time,label:'FVG',fillColor:'rgba(239,68,68,.07)',borderColor:'rgba(239,68,68,.5)',labelColor:'#ef4444'});}
   }
 
   // ── OB 감지 ──
   const obs=[];
   for(let i=3;i<N-3;i++){
     const bn=C[i+1].close-C[i+1].open;
-    if(C[i].close<C[i].open&&bn>ab(C,i)*1.2&&C[i+1].close>C[i+1].open){
-      let mitigated=false;
-      for(let j=i+2;j<N;j++){if(C[j].low<=C[i].low){mitigated=true;break;}}
-      if(!mitigated) obs.push({type:'BULL',top:C[i].high,bot:C[i].low,startTime:C[i].time,label:'Bullish OB',fillColor:'rgba(59,130,246,0.08)',borderColor:'rgba(59,130,246,0.55)',labelColor:'#3b82f6'});
-    }
-    if(C[i].close>C[i].open&&-bn>ab(C,i)*1.2&&C[i+1].close<C[i+1].open){
-      let mitigated=false;
-      for(let j=i+2;j<N;j++){if(C[j].high>=C[i].high){mitigated=true;break;}}
-      if(!mitigated) obs.push({type:'BEAR',top:C[i].high,bot:C[i].low,startTime:C[i].time,label:'Bearish OB',fillColor:'rgba(139,92,246,0.08)',borderColor:'rgba(139,92,246,0.55)',labelColor:'#8b5cf6'});
-    }
+    if(C[i].close<C[i].open&&bn>atrN(C,i)*1.2&&C[i+1].close>C[i+1].open){let m=false;for(let j=i+2;j<N;j++)if(C[j].low<=C[i].low){m=true;break;}if(!m)obs.push({type:'BULL',top:C[i].high,bot:C[i].low,startTime:C[i].time,label:'Bullish OB',fillColor:'rgba(59,130,246,.08)',borderColor:'rgba(59,130,246,.55)',labelColor:'#3b82f6',idx:i});}
+    if(C[i].close>C[i].open&&-bn>atrN(C,i)*1.2&&C[i+1].close<C[i+1].open){let m=false;for(let j=i+2;j<N;j++)if(C[j].high>=C[i].high){m=true;break;}if(!m)obs.push({type:'BEAR',top:C[i].high,bot:C[i].low,startTime:C[i].time,label:'Bearish OB',fillColor:'rgba(139,92,246,.08)',borderColor:'rgba(139,92,246,.55)',labelColor:'#8b5cf6',idx:i});}
   }
 
-  // ── 셋업 감지 ──
-  const setups=[], start=Math.max(5,N-30);
+  // ── OTE / Discount-Premium ──
+  const oteZones=[], fibLines=[], discPrem=[];
+  SH.slice(-6).forEach(sh=>{
+    const nL=SL.filter(sl=>sl.i>sh.i&&sl.i<sh.i+25);
+    if(!nL.length)return;
+    const sl=nL[0];
+    const H=sh.p, L=sl.p, rng=H-L;
+    if(rng/H<0.015)return;
+    const f50=H-rng*.5, f618=H-rng*.618, f786=H-rng*.786;
+    discPrem.push({swingHigh:H,swingLow:L,mid:f50,startTime:sh.t,endTime:sl.t,premFill:'rgba(239,68,68,.05)',premBorder:'rgba(239,68,68,.25)',discFill:'rgba(34,197,94,.05)',discBorder:'rgba(34,197,94,.25)'});
+    oteZones.push({top:f618,bot:f786,startTime:sl.t,fillColor:'rgba(245,158,11,.1)',borderColor:'rgba(245,158,11,.55)',label:'OTE',labelColor:'#f59e0b'});
+    [{p:f50,l:'50%',c:'rgba(180,180,180,.3)'},{p:f618,l:'61.8%',c:'rgba(245,158,11,.5)'},{p:f786,l:'78.6%',c:'rgba(245,158,11,.45)'}].forEach(f=>fibLines.push({price:f.p,label:f.l,color:f.c,startTime:sh.t}));
+  });
+
+  // ── 전체 패턴 셋업 감지 ──
+  const rawSetups=[], seen=new Set();
+  const cp=C[N-1].close;
+  const start=Math.max(6,N-60);
+
   for(let i=start;i<N-1;i++){
-    const pH=shs.filter(s=>s.i<i-1), pL=sls.filter(s=>s.i<i-1);
-    if(pH.length){const r=pH[pH.length-1];if(C[i].close>r.p&&C[i-1].close<=r.p){const strong=(C[i].close-C[i].open)>ab(C,i)*1.8;const nearSL=sls.filter(s=>s.i<i).slice(-1)[0];const slP=nearSL?Math.min(nearSL.p*.999,C[i].low*.998):C[i].low*.997;const risk=C[i].close-slP;if(risk>0&&risk/C[i].close<.06){const tpP=C[i].close+risk*2;const s={id:`${C[i].time}_L`,type:'LONG',pattern:strong?'구조전환':'BOS',entry:C[i].close,sl:slP,tp:tpP,time:C[i].time,status:'active'};for(let j=i+1;j<N;j++){if(C[j].low<=slP){s.status='sl_hit';s.exitPrice=slP;break;}if(C[j].high>=tpP){s.status='tp_hit';s.exitPrice=tpP;break;}}setups.push(s);}}}
-    if(pL.length){const r=pL[pL.length-1];if(C[i].close<r.p&&C[i-1].close>=r.p){const strong=(C[i].open-C[i].close)>ab(C,i)*1.8;const nearSL=shs.filter(s=>s.i<i).slice(-1)[0];const slP=nearSL?Math.max(nearSL.p*1.001,C[i].high*1.002):C[i].high*1.003;const risk=slP-C[i].close;if(risk>0&&risk/C[i].close<.06){const tpP=C[i].close-risk*2;const s={id:`${C[i].time}_S`,type:'SHORT',pattern:strong?'구조전환':'BOS',entry:C[i].close,sl:slP,tp:tpP,time:C[i].time,status:'active'};for(let j=i+1;j<N;j++){if(C[j].high>=slP){s.status='sl_hit';s.exitPrice=slP;break;}if(C[j].low<=tpP){s.status='tp_hit';s.exitPrice=tpP;break;}}setups.push(s);}}}
+    const pH=SH.filter(s=>s.i<i), pL=SL.filter(s=>s.i<i);
+
+    // ▶ 1. CISD 롱 — 전 캔들 저점 아래 윅, 전 캔들 고점 위로 불리시 마감
+    if(i>=2&&C[i].low<C[i-1].low&&C[i].close>C[i-1].high&&C[i].close>C[i].open){
+      const slP=C[i].low*0.9988, tpP=nextBSL(i,C[i].close);
+      const rsk=C[i].close-slP, rwd=tpP-C[i].close;
+      if(rsk>0&&rwd>0&&rwd/rsk>=0.8&&rsk/C[i].close<.06){
+        const s=mkSetup(`${C[i].time}_cisd_l`,'LONG','CISD↑',C[i].close,slP,tpP,C[i].time);
+        checkOut(s,C,i);rawSetups.push(s);
+      }
+    }
+
+    // ▶ 2. CISD 숏 — 전 캔들 고점 위 윅, 전 캔들 저점 아래로 베어리시 마감
+    if(i>=2&&C[i].high>C[i-1].high&&C[i].close<C[i-1].low&&C[i].close<C[i].open){
+      const slP=C[i].high*1.0012, tpP=nextSSL(i,C[i].close);
+      const rsk=slP-C[i].close, rwd=C[i].close-tpP;
+      if(rsk>0&&rwd>0&&rwd/rsk>=0.8&&rsk/C[i].close<.06){
+        const s=mkSetup(`${C[i].time}_cisd_s`,'SHORT','CISD↓',C[i].close,slP,tpP,C[i].time);
+        checkOut(s,C,i);rawSetups.push(s);
+      }
+    }
+
+    // ▶ 3. 터틀수프 숏 — BSL 스윕 후 역전 (가짜 상향 돌파)
+    pH.slice(-4).forEach(sh=>{
+      if(C[i].high>sh.p*1.0005&&C[i].close<sh.p&&C[i-1].high<=sh.p*1.001){
+        const slP=C[i].high*1.0015, tpP=nextSSL(i,C[i].close);
+        const rsk=slP-C[i].close, rwd=C[i].close-tpP;
+        if(rsk>0&&rwd>0&&rwd/rsk>=0.8&&rsk/C[i].close<.06){
+          const s=mkSetup(`${C[i].time}_ts_s${sh.i}`,'SHORT','터틀수프↓',C[i].close,slP,tpP,C[i].time);
+          checkOut(s,C,i);rawSetups.push(s);
+        }
+      }
+    });
+
+    // ▶ 4. 터틀수프 롱 — SSL 스윕 후 역전 (가짜 하향 돌파)
+    pL.slice(-4).forEach(sl=>{
+      if(C[i].low<sl.p*0.9995&&C[i].close>sl.p&&C[i-1].low>=sl.p*0.999){
+        const slP=C[i].low*0.9985, tpP=nextBSL(i,C[i].close);
+        const rsk=C[i].close-slP, rwd=tpP-C[i].close;
+        if(rsk>0&&rwd>0&&rwd/rsk>=0.8&&rsk/C[i].close<.06){
+          const s=mkSetup(`${C[i].time}_ts_l${sl.i}`,'LONG','터틀수프↑',C[i].close,slP,tpP,C[i].time);
+          checkOut(s,C,i);rawSetups.push(s);
+        }
+      }
+    });
+
+    // ▶ 5. BOS 롱 / 구조전환 롱
+    if(pH.length){
+      const r=pH[pH.length-1];
+      if(C[i].close>r.p&&C[i-1].close<=r.p){
+        const strong=(C[i].close-C[i].open)>atrN(C,i)*2;
+        const nSL=pL.slice(-1)[0];
+        const slP=nSL?Math.min(nSL.p*.999,C[i].low*.998):C[i].low*.997;
+        const tpP=nextBSL(i,C[i].close);
+        const rsk=C[i].close-slP, rwd=tpP-C[i].close;
+        if(rsk>0&&rwd>0&&rwd/rsk>=0.8&&rsk/C[i].close<.06){
+          const s=mkSetup(`${C[i].time}_bos_l`,'LONG',strong?'구조전환↑':'BOS↑',C[i].close,slP,tpP,C[i].time);
+          checkOut(s,C,i);rawSetups.push(s);
+        }
+      }
+    }
+
+    // ▶ 6. BOS 숏 / 구조전환 숏
+    if(pL.length){
+      const r=pL[pL.length-1];
+      if(C[i].close<r.p&&C[i-1].close>=r.p){
+        const strong=(C[i].open-C[i].close)>atrN(C,i)*2;
+        const nSH=pH.slice(-1)[0];
+        const slP=nSH?Math.max(nSH.p*1.001,C[i].high*1.002):C[i].high*1.003;
+        const tpP=nextSSL(i,C[i].close);
+        const rsk=slP-C[i].close, rwd=C[i].close-tpP;
+        if(rsk>0&&rwd>0&&rwd/rsk>=0.8&&rsk/C[i].close<.06){
+          const s=mkSetup(`${C[i].time}_bos_s`,'SHORT',strong?'구조전환↓':'BOS↓',C[i].close,slP,tpP,C[i].time);
+          checkOut(s,C,i);rawSetups.push(s);
+        }
+      }
+    }
+
+    // ▶ 7. OB 리턴 롱 — 불리시 OB 구간에 가격 재진입
+    obs.filter(o=>o.type==='BULL'&&o.idx<i).slice(-3).forEach(ob=>{
+      if(C[i].low<=ob.top&&C[i].high>=ob.bot&&C[i].close>ob.bot){
+        const slP=ob.bot*0.999, tpP=nextBSL(i,C[i].close);
+        const rsk=C[i].close-slP, rwd=tpP-C[i].close;
+        if(rsk>0&&rwd>0&&rwd/rsk>=0.8&&rsk/C[i].close<.06){
+          const s=mkSetup(`${C[i].time}_ob_l${ob.idx}`,'LONG','OB리턴↑',C[i].close,slP,tpP,C[i].time);
+          checkOut(s,C,i);rawSetups.push(s);
+        }
+      }
+    });
+
+    // ▶ 8. OB 리턴 숏 — 베어리시 OB 구간에 가격 재진입
+    obs.filter(o=>o.type==='BEAR'&&o.idx<i).slice(-3).forEach(ob=>{
+      if(C[i].high>=ob.bot&&C[i].low<=ob.top&&C[i].close<ob.top){
+        const slP=ob.top*1.001, tpP=nextSSL(i,C[i].close);
+        const rsk=slP-C[i].close, rwd=C[i].close-tpP;
+        if(rsk>0&&rwd>0&&rwd/rsk>=0.8&&rsk/C[i].close<.06){
+          const s=mkSetup(`${C[i].time}_ob_s${ob.idx}`,'SHORT','OB리턴↓',C[i].close,slP,tpP,C[i].time);
+          checkOut(s,C,i);rawSetups.push(s);
+        }
+      }
+    });
+
+    // ▶ 9. FVG 리턴 롱 — 불리시 FVG에 가격 재진입
+    fvgs.filter(f=>f.type==='BULL').slice(-3).forEach(fvg=>{
+      if(C[i].low<=fvg.top&&C[i].high>=fvg.bot&&C[i].close>fvg.bot){
+        const slP=fvg.bot*0.999, tpP=nextBSL(i,C[i].close);
+        const rsk=C[i].close-slP, rwd=tpP-C[i].close;
+        if(rsk>0&&rwd>0&&rwd/rsk>=0.8&&rsk/C[i].close<.06){
+          const s=mkSetup(`${C[i].time}_fvg_l`,'LONG','FVG리턴↑',C[i].close,slP,tpP,C[i].time);
+          checkOut(s,C,i);rawSetups.push(s);
+        }
+      }
+    });
+
+    // ▶ 10. FVG 리턴 숏 — 베어리시 FVG에 가격 재진입
+    fvgs.filter(f=>f.type==='BEAR').slice(-3).forEach(fvg=>{
+      if(C[i].high>=fvg.bot&&C[i].low<=fvg.top&&C[i].close<fvg.top){
+        const slP=fvg.top*1.001, tpP=nextSSL(i,C[i].close);
+        const rsk=slP-C[i].close, rwd=C[i].close-tpP;
+        if(rsk>0&&rwd>0&&rwd/rsk>=0.8&&rsk/C[i].close<.06){
+          const s=mkSetup(`${C[i].time}_fvg_s`,'SHORT','FVG리턴↓',C[i].close,slP,tpP,C[i].time);
+          checkOut(s,C,i);rawSetups.push(s);
+        }
+      }
+    });
+
+    // ▶ 11. OTE 롱 — SSL 스윕 후 OTE 구간(61.8~78.6%) 진입
+    if(oteZones.length){
+      const lastOte=oteZones[oteZones.length-1];
+      if(C[i].low<=lastOte.top&&C[i].high>=lastOte.bot&&C[i].close>lastOte.bot){
+        const slP=SL.filter(s=>s.p<lastOte.bot).slice(-1)[0]?.p*.999||lastOte.bot*.997;
+        const tpP=nextBSL(i,C[i].close);
+        const rsk=C[i].close-slP, rwd=tpP-C[i].close;
+        if(rsk>0&&rwd>0&&rwd/rsk>=0.8&&rsk/C[i].close<.06){
+          const s=mkSetup(`${C[i].time}_ote_l`,'LONG','OTE↑',C[i].close,slP,tpP,C[i].time);
+          checkOut(s,C,i);rawSetups.push(s);
+        }
+      }
+    }
   }
 
-  // BSL/SSL 레벨
-  const liqLevels=[
-    {price:74050,label:'BSL 03/04⭐',color:'rgba(34,197,94,.7)',style:'dashed'},
-    {price:70983,label:'BSL 02/15',color:'rgba(34,197,94,.5)',style:'dashed'},
-    {price:68699,label:'BSL 02/21',color:'rgba(34,197,94,.4)',style:'dashed'},
-    {price:65632,label:'SSL 02/19',color:'rgba(239,68,68,.7)',style:'dashed'},
-    {price:63030,label:'SSL 02/28',color:'rgba(239,68,68,.6)',style:'dashed'},
-    {price:62510,label:'SSL 주봉⭐',color:'rgba(239,68,68,.85)',style:'dashed'},
-  ];
+  // 중복 제거 + 패턴별 최신 1개씩만
+  const patMap={};
+  rawSetups.forEach(s=>{
+    const k=`${s.pattern}_${s.type}`;
+    if(!patMap[k]||s.time>patMap[k].time) patMap[k]=s;
+  });
 
-  const active=setups.filter(s=>s.status==='active');
-  const done=setups.filter(s=>s.status!=='active').slice(-5);
-  const ote=detectOTE(C);
-  return{fvgs:fvgs.slice(-5), obs:obs.slice(-4), active, done, liqLevels, shs:shs.slice(-3), sls:sls.slice(-3), cp, ote};
+  const active=Object.values(patMap).filter(s=>s.status==='active');
+  const done=rawSetups.filter(s=>s.status!=='active').slice(-8);
+
+  return{fvgs:fvgs.slice(-5), obs:obs.slice(-4), active, done,
+    shs:SH.slice(-3), sls:SL.slice(-3), cp,
+    ote:{oteZones:oteZones.slice(-2), fibLines:fibLines.slice(-15), discPrem:discPrem.slice(-2)}};
 }
 
 // ── Canvas 오버레이 드로잉 ────────────────────
-function drawOverlay(canvasEl, chartInst, seriesInst, boxes, liqLevels, setups, shs, sls){
+function drawOverlay(canvasEl, chartInst, seriesInst, boxes, ote, setups){
   if(!canvasEl||!chartInst||!seriesInst)return;
   const wrap=canvasEl.parentElement;
   const w=wrap.clientWidth, h=wrap.clientHeight;
   canvasEl.width=w; canvasEl.height=h;
   const ctx=canvasEl.getContext('2d');
   ctx.clearRect(0,0,w,h);
-  // 오른쪽 가격축 너비 제외
-  const rPad=65;
+  const rPad=68;
 
-  // ── Discount / Premium 박스 ──
-  if(currentOTE){
-    currentOTE.discPrem.forEach(dp=>{
-      const yH=seriesInst.priceToCoordinate(dp.swingHigh);
-      const yM=seriesInst.priceToCoordinate(dp.mid);
-      const yL=seriesInst.priceToCoordinate(dp.swingLow);
-      const x1=chartInst.timeScale().timeToCoordinate(dp.startTime);
+  const yCoord=p=>seriesInst.priceToCoordinate(p);
+  const xCoord=t=>chartInst.timeScale().timeToCoordinate(t);
+
+  // ── Discount/Premium ──
+  if(ote){
+    ote.discPrem.forEach(dp=>{
+      const yH=yCoord(dp.swingHigh), yM=yCoord(dp.mid), yL=yCoord(dp.swingLow), x1=xCoord(dp.startTime);
       if(yH===null||yM===null||yL===null||x1===null)return;
       const x2=w-rPad;
-      // Premium (위, 빨강)
       ctx.fillStyle=dp.premFill;ctx.fillRect(x1,Math.min(yH,yM),x2-x1,Math.abs(yM-yH));
       ctx.strokeStyle=dp.premBorder;ctx.lineWidth=.5;ctx.setLineDash([3,3]);ctx.strokeRect(x1,Math.min(yH,yM),x2-x1,Math.abs(yM-yH));
-      // Discount (아래, 초록)
       ctx.fillStyle=dp.discFill;ctx.fillRect(x1,Math.min(yM,yL),x2-x1,Math.abs(yL-yM));
       ctx.strokeStyle=dp.discBorder;ctx.strokeRect(x1,Math.min(yM,yL),x2-x1,Math.abs(yL-yM));
       ctx.setLineDash([]);
-      // 50% 라인 레이블
-      if(yM!==null){ctx.fillStyle='rgba(200,200,200,.5)';ctx.font='9px sans-serif';ctx.fillText('50%',x2-28,yM-2);}
+      ctx.fillStyle='rgba(200,200,200,.35)';ctx.font='9px sans-serif';
+      if(yM!==null)ctx.fillText('50%',x2-26,yM-2);
     });
-    // OTE 구간 (61.8~78.6%)
-    currentOTE.oteZones.forEach(box=>{
-      const y1=seriesInst.priceToCoordinate(box.top);
-      const y2=seriesInst.priceToCoordinate(box.bot);
-      const x1=chartInst.timeScale().timeToCoordinate(box.startTime);
+
+    // OTE 박스
+    ote.oteZones.forEach(box=>{
+      const y1=yCoord(box.top), y2=yCoord(box.bot), x1=xCoord(box.startTime);
       if(y1===null||y2===null||x1===null)return;
-      const yTop=Math.min(y1,y2),yBot=Math.max(y1,y2),bh=yBot-yTop;
+      const yT=Math.min(y1,y2), bh=Math.abs(y2-y1);
       if(bh<2)return;
-      const x2=w-rPad;
-      ctx.fillStyle=box.fillColor;ctx.fillRect(x1,yTop,x2-x1,bh);
-      ctx.strokeStyle=box.borderColor;ctx.lineWidth=1.5;ctx.setLineDash([]);ctx.strokeRect(x1,yTop,x2-x1,bh);
+      ctx.fillStyle=box.fillColor;ctx.fillRect(x1,yT,w-rPad-x1,bh);
+      ctx.strokeStyle=box.borderColor;ctx.lineWidth=1.5;ctx.setLineDash([]);ctx.strokeRect(x1,yT,w-rPad-x1,bh);
       ctx.fillStyle=box.labelColor;ctx.font='bold 11px sans-serif';
-      ctx.fillText(box.label,x1+5,yTop+bh/2+4);
+      if(bh>12)ctx.fillText(box.label,x1+5,yT+bh/2+4);
     });
-    // 피보나치 레벨 라인
-    currentOTE.fibLines.forEach(fl=>{
-      const y=seriesInst.priceToCoordinate(fl.price);
-      const x1=chartInst.timeScale().timeToCoordinate(fl.startTime)||0;
+
+    // 피보나치 레벨
+    ote.fibLines.forEach(fl=>{
+      const y=yCoord(fl.price), x1=xCoord(fl.startTime)||0;
       if(y===null)return;
       ctx.strokeStyle=fl.color;ctx.lineWidth=1;ctx.setLineDash([4,3]);
       ctx.beginPath();ctx.moveTo(x1,y);ctx.lineTo(w-rPad,y);ctx.stroke();
@@ -402,139 +505,136 @@ function drawOverlay(canvasEl, chartInst, seriesInst, boxes, liqLevels, setups, 
     });
   }
 
-  // ── 박스 (FVG / OB) ──
+  // ── FVG / OB 박스 ──
   boxes.forEach(box=>{
-    const y1=seriesInst.priceToCoordinate(box.top);
-    const y2=seriesInst.priceToCoordinate(box.bot);
-    const x1=chartInst.timeScale().timeToCoordinate(box.startTime);
+    const y1=yCoord(box.top), y2=yCoord(box.bot), x1=xCoord(box.startTime);
     if(y1===null||y2===null||x1===null)return;
-    const yTop=Math.min(y1,y2), yBot=Math.max(y1,y2), bh=yBot-yTop;
+    const yT=Math.min(y1,y2), bh=Math.abs(y2-y1);
     if(bh<1)return;
     const x2=w-rPad;
-
-    // fill
-    ctx.fillStyle=box.fillColor;
-    ctx.fillRect(x1,yTop,x2-x1,bh);
-    // border
-    ctx.strokeStyle=box.borderColor;
-    ctx.lineWidth=1; ctx.setLineDash([]);
-    ctx.strokeRect(x1,yTop,x2-x1,bh);
-    // label (우측 안쪽)
-    ctx.fillStyle=box.labelColor;
-    ctx.font='11px -apple-system,sans-serif';
+    ctx.fillStyle=box.fillColor;ctx.fillRect(x1,yT,x2-x1,bh);
+    ctx.strokeStyle=box.borderColor;ctx.lineWidth=1;ctx.setLineDash([]);ctx.strokeRect(x1,yT,x2-x1,bh);
+    ctx.fillStyle=box.labelColor;ctx.font='11px sans-serif';
     const lw=ctx.measureText(box.label).width;
-    if(bh>12) ctx.fillText(box.label, x2-lw-6, yTop+bh/2+4);
+    if(bh>12)ctx.fillText(box.label,x2-lw-5,yT+bh/2+4);
+  });
+
+  // ── 셋업 진입/TP/SL ──
+  setups.forEach(s=>{
+    const isL=s.type==='LONG';
+    const tpPct=Math.abs(pct(s.tp,s.entry)).toFixed(2), slPct=Math.abs(pct(s.sl,s.entry)).toFixed(2);
+    const rr=(s.rr||0).toFixed(1);
+    [
+      {p:s.entry, c:'rgba(59,130,246,.9)', w:2, dash:[], lbl:`${s.pattern}  진입`},
+      {p:s.tp,    c:'rgba(34,197,94,.8)',  w:1, dash:[6,4],lbl:`TP  +${tpPct}%  (RR ${rr})`},
+      {p:s.sl,    c:'rgba(239,68,68,.8)',  w:1, dash:[6,4],lbl:`SL  -${slPct}%`},
+    ].forEach(l=>{
+      const y=yCoord(l.p);if(y===null)return;
+      ctx.strokeStyle=l.c;ctx.lineWidth=l.w;ctx.setLineDash(l.dash);
+      ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w-rPad,y);ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle=l.c;ctx.font='11px sans-serif';
+      const lw=ctx.measureText(l.lbl).width;
+      ctx.fillText(l.lbl,w-rPad-lw-5,y-3);
+    });
+    // 방향 화살표
+    const ym=yCoord(s.entry);
+    if(ym!==null){ctx.fillStyle='rgba(59,130,246,.9)';ctx.font='bold 11px sans-serif';ctx.fillText(isL?'▲':'▼',6,isL?ym-4:ym+12);}
   });
 
   // ── BSL/SSL 점선 ──
-  liqLevels.forEach(liq=>{
-    const y=seriesInst.priceToCoordinate(liq.price);
-    if(y===null)return;
-    ctx.strokeStyle=liq.color;
-    ctx.lineWidth=1; ctx.setLineDash([5,4]);
-    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w-rPad,y); ctx.stroke();
+  const liqLines=[
+    {price:74050,label:'BSL ⭐',color:'rgba(34,197,94,.6)'},{price:70983,label:'BSL',color:'rgba(34,197,94,.45)'},
+    {price:65632,label:'SSL',color:'rgba(239,68,68,.6)'},{price:63030,label:'SSL',color:'rgba(239,68,68,.5)'},
+    {price:62510,label:'SSL 주봉⭐',color:'rgba(239,68,68,.75)'},
+  ];
+  liqLines.forEach(l=>{
+    const y=yCoord(l.price);if(y===null)return;
+    ctx.strokeStyle=l.color;ctx.lineWidth=1;ctx.setLineDash([5,4]);
+    ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w-rPad,y);ctx.stroke();
     ctx.setLineDash([]);
-    ctx.fillStyle=liq.color;
-    ctx.font='10px -apple-system,sans-serif';
-    ctx.fillText(liq.label,4,y-3);
+    ctx.fillStyle=l.color;ctx.font='10px sans-serif';
+    ctx.fillText(l.label,4,y-3);
   });
-
-  // ── 셋업 진입/TP/SL 선 ──
-  setups.forEach(s=>{
-    const isL=s.type==='LONG';
-    const lines=[
-      {price:s.entry, color:'rgba(59,130,246,.9)', width:2, dash:[], label:`진입 ${fmt(s.entry)}`},
-      {price:s.tp, color:'rgba(34,197,94,.8)', width:1, dash:[6,4], label:`TP  +${Math.abs(pct(s.tp,s.entry)).toFixed(2)}%`},
-      {price:s.sl, color:'rgba(239,68,68,.8)', width:1, dash:[6,4], label:`SL  -${Math.abs(pct(s.sl,s.entry)).toFixed(2)}%`},
-    ];
-    lines.forEach(l=>{
-      const y=seriesInst.priceToCoordinate(l.price);
-      if(y===null)return;
-      ctx.strokeStyle=l.color; ctx.lineWidth=l.width; ctx.setLineDash(l.dash);
-      ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w-rPad,y); ctx.stroke();
-      ctx.setLineDash([]);
-      ctx.fillStyle=l.color; ctx.font='11px -apple-system,sans-serif';
-      const lw=ctx.measureText(l.label).width;
-      ctx.fillText(l.label, w-rPad-lw-6, y-3);
-    });
-    // 진입 마커
-    const ym=seriesInst.priceToCoordinate(s.entry);
-    if(ym!==null){
-      ctx.fillStyle='rgba(59,130,246,.9)';
-      ctx.font='bold 11px sans-serif';
-      ctx.fillText(isL?'▲ '+s.pattern:'▼ '+s.pattern, 6, isL?ym-4:ym+12);
-    }
-  });
-
-  // ── 최근 스윙 SH/SL 도트 라벨 ──
-  // (마커로 처리하므로 생략 — lightweight-charts setMarkers로 처리)
 }
 
 // ── 메인 차트 ─────────────────────────────────
-let chartInitDone=false;
+let chartDone=false;
 function initChart(){
-  if(chartInitDone)return;
+  if(chartDone)return;
   const el=$('chart');
   chart=LightweightCharts.createChart(el,{layout:{background:{color:'#0f1117'},textColor:'#4e5566'},grid:{vertLines:{color:'#181c25'},horzLines:{color:'#181c25'}},crosshair:{mode:LightweightCharts.CrosshairMode.Normal},rightPriceScale:{borderColor:'#252a36',scaleMargins:{top:.08,bottom:.08}},timeScale:{borderColor:'#252a36',timeVisible:true,secondsVisible:false}});
   series=chart.addCandlestickSeries({upColor:'#22c55e',downColor:'#ef4444',borderUpColor:'#22c55e',borderDownColor:'#ef4444',wickUpColor:'#22c55e',wickDownColor:'#ef4444'});
-  const redraw=()=>redrawOverlay();
-  chart.timeScale().subscribeVisibleTimeRangeChange(redraw);
-  chart.subscribeCrosshairMove(redraw);
-  new ResizeObserver(()=>{const r=el.getBoundingClientRect();if(r.width>0){chart.applyOptions({width:r.width,height:r.height});redraw();}}).observe(el);
-  chartInitDone=true;
+  const rd=()=>redrawOvl();
+  chart.timeScale().subscribeVisibleTimeRangeChange(rd);
+  chart.subscribeCrosshairMove(rd);
+  new ResizeObserver(()=>{const r=el.getBoundingClientRect();if(r.width>0){chart.applyOptions({width:r.width,height:r.height});rd();}}).observe(el);
+  chartDone=true;
 }
 
-function redrawOverlay(){
-  drawOverlay($('overlay'),chart,series,currentBoxes,
-    [{price:74050,label:'BSL 03/04⭐',color:'rgba(34,197,94,.7)'},{price:70983,label:'BSL 02/15',color:'rgba(34,197,94,.5)'},{price:68699,label:'BSL 02/21',color:'rgba(34,197,94,.4)'},{price:65632,label:'SSL 02/19',color:'rgba(239,68,68,.7)'},{price:63030,label:'SSL 02/28',color:'rgba(239,68,68,.6)'},{price:62510,label:'SSL 주봉⭐',color:'rgba(239,68,68,.85)'}],
-    currentSetups,[],[]);
+function redrawOvl(){
+  drawOverlay($('overlay'),chart,series,currentBoxes,currentOTE,currentSetups);
 }
 
 function renderChart(C, res){
   series.setData(C.map(c=>({time:c.time,open:c.open,high:c.high,low:c.low,close:c.close})));
-  // 박스 = FVG + OB
   currentBoxes=[...res.fvgs,...res.obs];
   currentSetups=res.active;
   currentOTE=res.ote;
-  // 마커: 최근 스윙 + 진입점
-  const markers=[];
-  res.shs.forEach(s=>markers.push({time:s.t,position:'aboveBar',color:'rgba(245,158,11,.4)',shape:'circle',text:'SH'}));
-  res.sls.forEach(s=>markers.push({time:s.t,position:'belowBar',color:'rgba(245,158,11,.4)',shape:'circle',text:'SL'}));
-  const seen=new Set();
+  // 스윙 마커
+  const markers=[], seen=new Set();
+  res.shs.forEach(s=>markers.push({time:s.t,position:'aboveBar',color:'rgba(239,68,68,.35)',shape:'circle',text:'SH'}));
+  res.sls.forEach(s=>markers.push({time:s.t,position:'belowBar',color:'rgba(34,197,94,.35)',shape:'circle',text:'SL'}));
   series.setMarkers(markers.sort((a,b)=>a.time-b.time).filter(m=>{const k=`${m.time}_${m.text}`;if(seen.has(k))return false;seen.add(k);return true;}));
   chart.timeScale().fitContent();
-  setTimeout(redrawOverlay,50);
+  setTimeout(redrawOvl,50);
 }
 
 function updatePanel(C, res){
   const cp=C[C.length-1].close, prev=C[C.length-2]?.close||cp;
-  const chg=((cp-prev)/prev*100), g=chg>=0;
+  const chg=(cp-prev)/prev*100, g=chg>=0;
   $('hP').textContent=fmt(cp);$('hP').style.color=g?'var(--g)':'var(--r)';
-  const hc=$('hC');hc.textContent=(g?'+':'')+chg.toFixed(2)+'%';hc.className='badge '+(g?'bg':'br2');
+  $('hC').textContent=(g?'+':'')+chg.toFixed(2)+'%';$('hC').className='badge '+(g?'bg':'br2');
   $('setupCnt').textContent=res.active.length;
+
   let html='';
   res.active.forEach(s=>{
     const isL=s.type==='LONG', col=isL?'var(--g)':'var(--r)';
-    const cp2=curPrice||cp, dist=isL?cp2-s.entry:s.entry-cp2;
-    const risk=Math.abs(s.entry-s.sl), prog=Math.min(100,Math.max(0,(dist/(risk*2))*100));
-    html+=`<div class="setup-card ${isL?'long':'short'}">
-      <div class="sc-head"><span class="sc-type" style="color:${col}">${isL?'▲ LONG':'▼ SHORT'}</span><span class="sc-pat">${s.pattern}</span></div>
+    const cp2=curPrice||cp;
+    const risk=Math.abs(s.entry-s.sl), rwd=Math.abs(s.tp-s.entry);
+    const dist=isL?cp2-s.entry:s.entry-cp2;
+    const prog=Math.min(100,Math.max(0,dist/rwd*100));
+    const rrColor=s.rr>=2?'var(--g)':s.rr>=1?'var(--y)':'var(--r)';
+    html+=`<div class="sc ${isL?'L':'S'}">
+      <div class="sc-top">
+        <span class="sc-dir" style="color:${col}">${isL?'▲ LONG':'▼ SHORT'}</span>
+        <div class="sc-tags">
+          <span class="sc-pat">${s.pattern}</span>
+          <span class="sc-rr" style="background:${rrColor}18;color:${rrColor}">RR ${(s.rr||0).toFixed(1)}</span>
+        </div>
+      </div>
       <div class="sc-row"><span class="sc-lbl">진입</span><span class="sc-val">${fmt(s.entry)}</span></div>
-      <div class="sc-row"><span class="sc-lbl">TP</span><span class="sc-val" style="color:var(--g)">${fmt(s.tp)}<span class="sc-pct" style="color:var(--g)">+${Math.abs(pct(s.tp,s.entry)).toFixed(2)}%</span></span></div>
-      <div class="sc-row"><span class="sc-lbl">SL</span><span class="sc-val" style="color:var(--r)">${fmt(s.sl)}<span class="sc-pct" style="color:var(--r)">-${Math.abs(pct(s.sl,s.entry)).toFixed(2)}%</span></span></div>
-      <div class="sc-row"><span class="sc-lbl">현재</span><span class="sc-val" style="color:${dist>=0?'var(--g)':'var(--r)'}">${fmt(cp2)}<span class="sc-pct" style="color:${dist>=0?'var(--g)':'var(--r)'}">${(pct(cp2,s.entry)>=0?'+':'')+pct(cp2,s.entry).toFixed(2)}%</span></span></div>
-      <div class="prog-bg"><div class="prog-fill" style="width:${prog}%;background:${col}"></div></div>
+      <div class="sc-row"><span class="sc-lbl">목표 (BSL/SSL)</span><span class="sc-val" style="color:var(--g)">${fmt(s.tp)}<span class="sc-sub" style="color:var(--g)">+${Math.abs(pct(s.tp,s.entry)).toFixed(2)}%</span></span></div>
+      <div class="sc-row"><span class="sc-lbl">손절</span><span class="sc-val" style="color:var(--r)">${fmt(s.sl)}<span class="sc-sub" style="color:var(--r)">-${Math.abs(pct(s.sl,s.entry)).toFixed(2)}%</span></span></div>
+      <div class="sc-row"><span class="sc-lbl">현재</span><span class="sc-val" style="color:${dist>=0?'var(--g)':'var(--r)'}">${fmt(cp2)}<span class="sc-sub" style="color:${dist>=0?'var(--g)':'var(--r)'}">${(pct(cp2,s.entry)>=0?'+':'')+pct(cp2,s.entry).toFixed(2)}%</span></span></div>
+      <div class="pb"><div class="pbf" style="width:${prog}%;background:${col}"></div></div>
     </div>`;
   });
+
   if(res.done.length){
-    html+=`<div style="padding:7px 14px;font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;background:var(--bg2);border-bottom:1px solid var(--border)">완료</div>`;
-    res.done.slice().reverse().forEach(s=>{const tp=s.status==='tp_hit';html+=`<div class="result-row"><div class="res-ico">${tp?'✅':'❌'}</div><div class="res-b"><div class="res-n">${s.type==='LONG'?'▲':'▼'} ${s.pattern}</div><div class="res-m">${tp?'익절':'손절'} @ ${fmt(s.exitPrice||0)}</div></div><div class="res-v" style="color:${tp?'var(--g)':'var(--r)'}">${tp?'+':'-'}${Math.abs(pct(tp?s.tp:s.sl,s.entry)).toFixed(2)}%</div></div>`;});
+    html+=`<div class="done-hd">완료된 셋업</div>`;
+    res.done.slice().reverse().slice(0,6).forEach(s=>{
+      const tp=s.status==='tp_hit';
+      const nat=(tp?pct(s.tp,s.entry):pct(s.sl,s.entry));
+      html+=`<div class="res"><div class="res-i">${tp?'✅':'❌'}</div><div class="res-b"><div class="res-n">${s.type==='LONG'?'▲':'▼'} ${s.pattern}</div><div class="res-m">${tp?'목표':'손절'} @ ${fmt(s.exitPrice||0)}</div></div><div class="res-v" style="color:${tp?'var(--g)':'var(--r)'}">${(nat>=0?'+':'')+nat.toFixed(2)}%</div></div>`;
+    });
   }
-  if(!html) html='<div class="empty-s"><div class="ei">📡</div><div class="et">신호 감지 중...<br>BOS · 구조전환 발생 시<br>자동으로 표시됩니다</div></div>';
+
+  if(!html) html='<div class="empty-s"><div class="ei">📡</div><div class="et">신호 대기 중<br>CISD · 터틀수프 · OB리턴<br>FVG · BOS · OTE 감지</div></div>';
   $('setupList').innerHTML=html;
 }
 
-// ── 유동성 차트 ───────────────────────────────
+// ── 유동성 탭 ─────────────────────────────────
 const LIQ=[
   {name:'BSL 03/04⭐',p:74050,type:'BSL',tf:'일봉'},{name:'$75K',p:75000,type:'ROUND',tf:'심리적'},
   {name:'BSL 02/15',p:70983,type:'BSL',tf:'일봉'},{name:'$70K',p:70000,type:'ROUND',tf:'심리적'},
@@ -544,42 +644,38 @@ const LIQ=[
   {name:'$60K',p:60000,type:'ROUND',tf:'심리적'},
 ];
 const TC={BSL:'#22c55e',SSL:'#ef4444',ROUND:'#8b5cf6'};
-let liqInitDone=false;
+let liqDone=false;
 
 function initLiqChart(){
-  if(liqInitDone)return;
+  if(liqDone)return;
   const el=$('liqChart');
   liqChart=LightweightCharts.createChart(el,{layout:{background:{color:'#0f1117'},textColor:'#4e5566'},grid:{vertLines:{color:'#181c25'},horzLines:{color:'#181c25'}},crosshair:{mode:LightweightCharts.CrosshairMode.Normal},rightPriceScale:{borderColor:'#252a36'},timeScale:{borderColor:'#252a36',timeVisible:true,secondsVisible:false}});
   liqSeries=liqChart.addCandlestickSeries({upColor:'#22c55e',downColor:'#ef4444',borderUpColor:'#22c55e',borderDownColor:'#ef4444',wickUpColor:'#22c55e',wickDownColor:'#ef4444'});
-  const redrawLiq=()=>drawLiqOverlay();
-  liqChart.timeScale().subscribeVisibleTimeRangeChange(redrawLiq);
-  liqChart.subscribeCrosshairMove(redrawLiq);
-  new ResizeObserver(()=>{const r=el.getBoundingClientRect();if(r.width>0){liqChart.applyOptions({width:r.width,height:r.height});drawLiqOverlay();}}).observe(el);
-  liqInitDone=true;
+  const rd=()=>drawLiqOvl();
+  liqChart.timeScale().subscribeVisibleTimeRangeChange(rd);
+  liqChart.subscribeCrosshairMove(rd);
+  new ResizeObserver(()=>{const r=el.getBoundingClientRect();if(r.width>0){liqChart.applyOptions({width:r.width,height:r.height});rd();}}).observe(el);
+  liqDone=true;
 }
 
-function drawLiqOverlay(){
-  const canvasEl=$('liqOverlay'), wrap=$('liqChartWrap');
-  if(!canvasEl||!liqChart||!liqSeries)return;
+function drawLiqOvl(){
+  const cv=$('liqOverlay'), wrap=$('liqChartWrap');
+  if(!cv||!liqChart||!liqSeries)return;
   const w=wrap.clientWidth, h=wrap.clientHeight;
-  canvasEl.width=w; canvasEl.height=h;
-  const ctx=canvasEl.getContext('2d');
+  cv.width=w; cv.height=h;
+  const ctx=cv.getContext('2d'), rPad=65;
   ctx.clearRect(0,0,w,h);
-  const rPad=65;
   const cp=curPrice;
   LIQ.forEach(l=>{
-    const y=liqSeries.priceToCoordinate(l.p);
-    if(y===null)return;
+    const y=liqSeries.priceToCoordinate(l.p);if(y===null)return;
     const col=TC[l.type]||'#888';
-    const isAbove=cp>0?l.p>cp:true;
-    ctx.strokeStyle=col; ctx.lineWidth=1; ctx.setLineDash([5,4]);
-    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w-rPad,y); ctx.stroke();
+    ctx.strokeStyle=col;ctx.lineWidth=1;ctx.setLineDash([5,4]);
+    ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w-rPad,y);ctx.stroke();
     ctx.setLineDash([]);
-    ctx.fillStyle=col; ctx.font='10px -apple-system,sans-serif';
-    const label=l.name+(cp>0&&Math.abs((l.p-cp)/cp)<0.02?' 🎯':'');
-    ctx.fillText(label,4,y-3);
+    const near=cp>0&&Math.abs((l.p-cp)/cp)<0.02;
+    ctx.fillStyle=col;ctx.font=near?'bold 10px sans-serif':'10px sans-serif';
+    ctx.fillText(l.name+(near?' 🎯':''),4,y-3);
   });
-  // 현재가선
   if(cp>0){const y=liqSeries.priceToCoordinate(cp);if(y!==null){ctx.strokeStyle='rgba(59,130,246,.6)';ctx.lineWidth=1;ctx.setLineDash([]);ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w-rPad,y);ctx.stroke();ctx.fillStyle='rgba(59,130,246,.9)';ctx.font='bold 10px sans-serif';ctx.fillText('▶ '+fmt(cp),4,y-3);}}
 }
 
@@ -589,9 +685,9 @@ async function loadLiqData(){
     const C=(await r.json()).map(x=>({time:Math.floor(x[0]/1000),open:+x[1],high:+x[2],low:+x[3],close:+x[4]}));
     liqSeries.setData(C.map(c=>({time:c.time,open:c.open,high:c.high,low:c.low,close:c.close})));
     liqChart.timeScale().fitContent();
-    if(!curPrice&&C.length) curPrice=C[C.length-1].close;
+    if(!curPrice&&C.length)curPrice=C[C.length-1].close;
     $('liqCp').textContent=fmt(curPrice);
-    setTimeout(()=>{drawLiqOverlay();renderLiqList();},50);
+    setTimeout(()=>{drawLiqOvl();renderLiqList();},50);
   }catch(e){}
 }
 
@@ -601,10 +697,7 @@ function renderLiqList(){
   const sorted=[...LIQ].sort((a,b)=>b.p-a.p);
   $('liqItems').innerHTML=sorted.map(l=>{
     const d=((l.p-cp)/cp*100), dc=d>0?'var(--g)':'var(--r)', col=TC[l.type]||'#888', near=Math.abs(d)<2;
-    return`<div class="liq-item" style="${near?'background:rgba(59,130,246,.04)':''}">
-      <div><div class="ln" style="${near?'color:var(--b)':''}">${l.name}${near?' 🎯':''}<span class="ltag" style="background:${col}18;color:${col}">${l.type}</span></div><div class="ltf">${l.tf}</div></div>
-      <div><div class="lp" style="color:${col}">${fmt(l.p)}</div><div class="ld" style="color:${dc}">${(d>0?'+':'')+d.toFixed(2)}%</div></div>
-    </div>`;
+    return`<div class="liq-item" style="${near?'background:rgba(59,130,246,.04)':''}"><div><div class="ln" style="${near?'color:var(--b)':''}">${l.name}${near?' 🎯':''}<span class="ltag" style="background:${col}18;color:${col}">${l.type}</span></div><div class="ltf">${l.tf}</div></div><div><div class="lp" style="color:${col}">${fmt(l.p)}</div><div class="ld" style="color:${dc}">${(d>0?'+':'')+d.toFixed(2)}%</div></div></div>`;
   }).join('');
 }
 
@@ -617,7 +710,7 @@ async function loadData(){
     const res=analyzeCandles(candles);
     renderChart(candles,res);
     updatePanel(candles,res);
-  }catch(e){}
+  }catch(e){console.error(e);}
 }
 
 function connectWS(){
@@ -633,15 +726,14 @@ function connectWS(){
     $('hP').textContent=fmt(nc.close);$('hP').style.color=nc.close>=nc.open?'var(--g)':'var(--r)';
     const res=analyzeCandles(candles);
     currentBoxes=[...res.fvgs,...res.obs];currentSetups=res.active;currentOTE=res.ote;
-    updatePanel(candles,res);
-    redrawOverlay();
-    if(curPage===2){drawLiqOverlay();renderLiqList();}
+    updatePanel(candles,res);redrawOvl();
+    if(curPage===2){drawLiqOvl();renderLiqList();}
   };
   ws.onclose=()=>setTimeout(connectWS,3000);ws.onerror=()=>ws.close();
 }
 
 // ── 백테스팅 테이블 ───────────────────────────
-[['🥇','CISD',108,63.9,0.92],['🥈','브레이커블록',107,43.0,0.29],['🥉','주간 TGIF',197,38.1,0.14],['4','OB리턴',104,34.6,0.04],['5','AMD+유다',458,29.9,-0.10],['6','SMT',200,28.5,-0.15],['7','터틀수프',170,26.5,-0.21]].forEach(([r,n,t,wr,ev])=>{
+[['🥇','CISD',108,63.9,0.92],['🥈','브레이커블록',107,43.0,0.29],['🥉','주간 TGIF',197,38.1,0.14],['4','OB리턴',104,34.6,0.04],['5','터틀수프',170,32.1,0.00],['6','FVG리턴',95,30.5,-0.08],['7','AMD+유다',458,29.9,-0.10],['8','SMT',200,28.5,-0.15]].forEach(([r,n,t,wr,ev])=>{
   const c=wr>=60?'var(--g)':wr>=40?'var(--y)':'var(--r)';
   const eb=ev>0.1?`<span class="ev evg">+${ev.toFixed(2)}</span>`:ev>0?`<span class="ev evy">+${ev.toFixed(2)}</span>`:`<span class="ev evr">${ev.toFixed(2)}</span>`;
   $('btB').innerHTML+=`<tr><td>${r}</td><td><b>${n}</b></td><td style="color:var(--muted)">${t}</td><td><div class="bar-r"><div class="bar-bg"><div class="bar-f" style="width:${wr}%;background:${c}"></div></div><span style="font-size:.7rem;font-weight:600;color:${c}">${wr.toFixed(1)}%</span></div></td><td>${eb}</td></tr>`;
